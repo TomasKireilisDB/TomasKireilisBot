@@ -40,6 +40,8 @@ namespace TomasKireilisBot
             // Register the BookingDialog.
             services.AddSingleton<BookingDialog>();
 
+            services.AddSingleton<CheckActivePullRequestsDialog>();
+
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();
 

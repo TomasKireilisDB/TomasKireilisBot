@@ -33,6 +33,7 @@ namespace TomasKireilisBot.Dialogs
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(bookingDialog);
+            AddDialog(new CheckActivePullRequestsDialog());
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,
@@ -49,7 +50,7 @@ namespace TomasKireilisBot.Dialogs
             if (!_luisRecognizer.IsConfigured)
             {
                 await stepContext.Context.SendActivityAsync(
-                    MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file.", inputHint: InputHints.IgnoringInput), cancellationToken);
+                    MessageFactory.Text("NOTE: LUIS is not configured. To enable all capabilities, add 'LuisAppId', 'LuisAPIKey' and 'LuisAPIHostName' to the appsettings.json file. ( this is for natural language recognition)", inputHint: InputHints.IgnoringInput), cancellationToken);
 
                 return await stepContext.NextAsync(null, cancellationToken);
             }
@@ -65,7 +66,7 @@ namespace TomasKireilisBot.Dialogs
             if (!_luisRecognizer.IsConfigured)
             {
                 // LUIS is not configured, we just run the BookingDialog path with an empty BookingDetailsInstance.
-                return await stepContext.BeginDialogAsync(nameof(BookingDialog), new BookingDetails(), cancellationToken);
+                return await stepContext.BeginDialogAsync(nameof(CheckActivePullRequestsDialog), new PullRequestDetails(), cancellationToken);
             }
 
             // Call LUIS and gather any potential booking details. (Note the TurnContext has the response to the prompt.)

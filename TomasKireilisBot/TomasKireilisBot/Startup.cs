@@ -3,6 +3,7 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.6.2
 
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,12 +34,6 @@ namespace TomasKireilisBot
 
             // Create the Conversation state. (Used by the Dialog system itself.)
             services.AddSingleton<ConversationState>();
-
-            // Register LUIS recognizer
-            services.AddSingleton<FlightBookingRecognizer>();
-
-            // Register the BookingDialog.
-            services.AddSingleton<BookingDialog>();
 
             services.AddSingleton<CheckActivePullRequestsDialog>();
 

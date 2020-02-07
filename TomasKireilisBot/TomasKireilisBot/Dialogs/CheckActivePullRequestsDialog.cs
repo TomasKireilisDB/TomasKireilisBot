@@ -14,6 +14,7 @@ using Microsoft.Bot.Schema;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using TomasKireilisBot.DataModels;
+using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
 
 namespace TomasKireilisBot.Dialogs
@@ -35,6 +36,7 @@ namespace TomasKireilisBot.Dialogs
             //  AddDialog(new DateResolverDialog());
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
+                FetchPullRequests,
                 FinalStepAsync
             }));
 
@@ -42,15 +44,22 @@ namespace TomasKireilisBot.Dialogs
             InitialDialogId = nameof(WaterfallDialog);
         }
 
-        private async Task<DialogTurnResult> FetchPullRequests()
+        private async Task<DialogTurnResult> FetchPullRequests(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
+            _bitBucketConversationVariables = await GlobalVariablesResolver.GetBitBucketConversationVariables();
             var pullRequestList = new List<PullRequest>();
             foreach (var globalVariables in _bitBucketConversationVariables.GlobalVariables)
             {
                 pullRequestList.AddRange(await _bitbucketClient.FetchActivePullRequests(globalVariables, _bitBucketConversationVariables.PersonalizedVariables.First()));
             }
 
-            return pullRequestList;
+            foreach (var pullRequest in pullRequestList)
+            {
+                var promptMessage = MessageFactory.Text(DestinationStepMsgText, DestinationStepMsgText);
+                await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+            }
+
+            return await stepContext.NextAsync(null, cancellationToken);
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)

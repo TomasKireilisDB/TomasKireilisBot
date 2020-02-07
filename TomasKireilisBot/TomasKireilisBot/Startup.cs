@@ -12,7 +12,10 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 using TomasKireilisBot.Bots;
+using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Dialogs;
+using TomasKireilisBot.Helpers;
+using TomasKireilisBot.Services.BitbucketService;
 
 namespace TomasKireilisBot
 {
@@ -39,6 +42,9 @@ namespace TomasKireilisBot
 
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();
+
+            services.AddSingleton<BitBucketConversationVariables>();
+            services.AddSingleton<IInnerBitbucketClient, InnerBitbucketClient>();
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogAndWelcomeBot<MainDialog>>();

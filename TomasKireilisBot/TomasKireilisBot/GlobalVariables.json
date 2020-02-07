@@ -1,0 +1,25 @@
+{
+    "GlobalVariables": [
+        {
+            "BaseUrl": "https://github.com/",
+            "ProjectName": "TOM",
+            "RepositoryName": "hallo"
+        }
+    ],
+    "PersonalizedVariables": [
+        {
+            "FullName": "TKIR",
+            "UserName": "Tomas",
+            "Password": "123456789",
+            "PersonalAccessToken": "",
+            "SpecificLoginInfo": [
+                {
+                    "UserName": "",
+                    "Password": "",
+                    "PersonalAccessToken": "",
+                    "BaseUrl": ""
+                }
+            ]
+        }
+    ]
+}

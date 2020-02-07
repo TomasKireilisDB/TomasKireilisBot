@@ -8,7 +8,7 @@ namespace TomasKireilisBot.DataModels
 {
     public class BitBucketGlobalVariables
     {
-        public string BaseUri { get; set; }
+        public string BaseUrl { get; set; }
         public string ProjectName { get; set; }
         public string RepositoryName { get; set; }
     }

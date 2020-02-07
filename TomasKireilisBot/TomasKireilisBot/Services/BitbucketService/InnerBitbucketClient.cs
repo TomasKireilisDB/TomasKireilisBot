@@ -18,11 +18,11 @@ namespace TomasKireilisBot.Services.BitbucketService
             BitBucketPersonalizedVariables bitBucketPersonalizedVariables)
         {
             var client = new BitbucketClient(
-                bitBucketGlobalVariables.BaseUri,
+                bitBucketGlobalVariables.BaseUrl,
                 bitBucketPersonalizedVariables.UserName,
                 bitBucketPersonalizedVariables.Password ?? bitBucketPersonalizedVariables.PersonalAccessToken);
             return (await client.GetPullRequestsAsync(
-                bitBucketGlobalVariables.ProjectName,
+                "../../../../projects/" + bitBucketGlobalVariables.ProjectName,
                 bitBucketGlobalVariables.RepositoryName)).ToList();
         }
 
@@ -32,7 +32,7 @@ namespace TomasKireilisBot.Services.BitbucketService
             long pullRequestId)
         {
             var client = new BitbucketClient(
-                bitBucketGlobalVariables.BaseUri,
+                bitBucketGlobalVariables.BaseUrl,
                 bitBucketPersonalizedVariables.UserName,
                 bitBucketPersonalizedVariables.Password ?? bitBucketPersonalizedVariables.PersonalAccessToken);
             var rez = await client.ApprovePullRequestAsync(bitBucketGlobalVariables.ProjectName,

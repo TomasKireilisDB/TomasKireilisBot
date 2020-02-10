@@ -21,8 +21,7 @@ namespace TomasKireilisBot.Services.BitbucketService
                 bitBucketGlobalVariables.BaseUrl,
                 bitBucketPersonalizedVariables.UserName,
                 bitBucketPersonalizedVariables.Password ?? bitBucketPersonalizedVariables.PersonalAccessToken);
-            return (await client.GetPullRequestsAsync(
-                "../../../../projects/" + bitBucketGlobalVariables.ProjectName,
+            return (await client.GetPullRequestsAsync(bitBucketGlobalVariables.ProjectName,
                 bitBucketGlobalVariables.RepositoryName)).ToList();
         }
 

@@ -44,11 +44,11 @@ namespace TomasKireilisBot.Dialogs
             var pullRequestList = new List<PullRequest>();
             foreach (var globalVariables in _bitBucketConversationVariables.GlobalVariables)
             {
-                var promptMlessage = MessageFactory.Text("dasdsadsda", "dasdsadsda");
-                await stepContext.BeginDialogAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMlessage }, cancellationToken);
+                //  var promptMlessage = MessageFactory.Text("dasdsadsda", "dasdsadsda");
+                //  await stepContext.BeginDialogAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMlessage }, cancellationToken);
                 try
                 {
-                    //  pullRequestList.AddRange(await _bitbucketClient.FetchActivePullRequests(globalVariables, _bitBucketConversationVariables.PersonalizedVariables.First()));
+                    pullRequestList.AddRange(await _bitbucketClient.FetchActivePullRequests(globalVariables, _bitBucketConversationVariables.PersonalizedVariables.First()));
                 }
                 catch (Exception e)
                 {

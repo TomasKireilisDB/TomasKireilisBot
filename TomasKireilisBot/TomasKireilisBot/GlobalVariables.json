@@ -1,7 +1,7 @@
 {
     "GlobalVariables": [
         {
-            "BaseUrl": "https://github.com/",
+            "BaseUrl": "https://bitbucket-new.azurewebsites.net",
             "ProjectName": "TOM",
             "RepositoryName": "hallo"
         }

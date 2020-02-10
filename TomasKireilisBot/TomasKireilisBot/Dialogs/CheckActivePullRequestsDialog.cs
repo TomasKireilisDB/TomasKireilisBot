@@ -1,18 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-//
-// Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.6.2
-
+using Bitbucket.Net.Models.Core.Projects;
+using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Dialogs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Bitbucket.Net.Models.Core.Projects;
-using Microsoft.Bot.Builder;
-using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
-using Microsoft.CodeAnalysis.Operations;
-using Microsoft.Recognizers.Text.DataTypes.TimexExpression;
 using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
@@ -47,10 +40,21 @@ namespace TomasKireilisBot.Dialogs
         private async Task<DialogTurnResult> FetchPullRequests(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             _bitBucketConversationVariables = await GlobalVariablesResolver.GetBitBucketConversationVariables();
+
             var pullRequestList = new List<PullRequest>();
             foreach (var globalVariables in _bitBucketConversationVariables.GlobalVariables)
             {
-                pullRequestList.AddRange(await _bitbucketClient.FetchActivePullRequests(globalVariables, _bitBucketConversationVariables.PersonalizedVariables.First()));
+                var promptMlessage = MessageFactory.Text("dasdsadsda", "dasdsadsda");
+                await stepContext.BeginDialogAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMlessage }, cancellationToken);
+                try
+                {
+                    //  pullRequestList.AddRange(await _bitbucketClient.FetchActivePullRequests(globalVariables, _bitBucketConversationVariables.PersonalizedVariables.First()));
+                }
+                catch (Exception e)
+                {
+                    var promptMessage = MessageFactory.Text(e.Message);
+                    return await stepContext.BeginDialogAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                }
             }
 
             foreach (var pullRequest in pullRequestList)

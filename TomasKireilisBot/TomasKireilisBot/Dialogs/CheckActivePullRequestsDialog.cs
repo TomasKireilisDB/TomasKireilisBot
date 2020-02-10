@@ -1,5 +1,4 @@
 using Bitbucket.Net.Models.Core.Projects;
-using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using System;
 using System.Collections.Generic;
@@ -44,23 +43,29 @@ namespace TomasKireilisBot.Dialogs
             var pullRequestList = new List<PullRequest>();
             foreach (var globalVariables in _bitBucketConversationVariables.GlobalVariables)
             {
-                //  var promptMlessage = MessageFactory.Text("dasdsadsda", "dasdsadsda");
-                //  await stepContext.BeginDialogAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMlessage }, cancellationToken);
+                await stepContext.Context.SendActivityAsync("Gathering info...", cancellationToken: cancellationToken);
                 try
                 {
                     pullRequestList.AddRange(await _bitbucketClient.FetchActivePullRequests(globalVariables, _bitBucketConversationVariables.PersonalizedVariables.First()));
                 }
                 catch (Exception e)
                 {
-                    var promptMessage = MessageFactory.Text(e.Message);
-                    return await stepContext.BeginDialogAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                    await stepContext.Context.SendActivityAsync("Exception was thrown during fetching data, maybe there in a wrong info provided for fetching information?", cancellationToken: cancellationToken);
+                    await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
                 }
             }
 
-            foreach (var pullRequest in pullRequestList)
+            if (pullRequestList.FindAll(x => x.Open).Count == 0)
             {
-                var promptMessage = MessageFactory.Text(DestinationStepMsgText, DestinationStepMsgText);
-                await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
+                await stepContext.Context.SendActivityAsync("No active pull requests found", cancellationToken: cancellationToken);
+            }
+
+            foreach (var pullRequest in pullRequestList.FindAll(x => x.Open))
+            {
+                await stepContext.Context.SendActivityAsync($"Author: {pullRequest.Author.User.Name}", cancellationToken: cancellationToken);
+                await stepContext.Context.SendActivityAsync($"Id: {pullRequest.Id}", cancellationToken: cancellationToken);
+                await stepContext.Context.SendActivityAsync($"Description: {pullRequest.Description}", cancellationToken: cancellationToken);
+                await stepContext.Context.SendActivityAsync($"For more info: NEED LINK THERE", cancellationToken: cancellationToken);
             }
 
             return await stepContext.NextAsync(null, cancellationToken);

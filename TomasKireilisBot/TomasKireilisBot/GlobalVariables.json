@@ -3,7 +3,7 @@
         {
             "BaseUrl": "https://bitbucket-new.azurewebsites.net",
             "ProjectName": "TOM",
-            "RepositoryName": "Tomas"
+            "RepositoryName": "javaset"
         }
     ],
     "PersonalizedVariables": [

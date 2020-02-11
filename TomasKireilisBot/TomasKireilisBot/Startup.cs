@@ -54,7 +54,7 @@ namespace TomasKireilisBot
             services.AddSingleton<IInnerBitbucketClient, InnerBitbucketClient>();
 
             services.AddSingleton(new ConcurrentDictionary<string, ConversationReference>());
-            services.AddSingleton<IConfiguration>(new ConfigurationRoot(new List<IConfigurationProvider>()));
+            //       services.AddSingleton<IConfiguration>(new ConfigurationRoot(new List<IConfigurationProvider>()));
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogAndWelcomeBot<MainDialog>>();

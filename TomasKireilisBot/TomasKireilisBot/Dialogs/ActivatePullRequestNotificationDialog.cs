@@ -33,7 +33,7 @@ namespace TomasKireilisBot.Dialogs
                 ConversationReference = reference,
                 Text = "PullRequestNotification"
             };
-            await stepContext.Context.SendActivityAsync("Adding notification... please wait.It might take some time", cancellationToken: cancellationToken);
+            await stepContext.Context.SendActivityAsync("Adding notification... please wait. It might take some time", cancellationToken: cancellationToken);
             CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=tomasbotstorage;AccountKey=I4+e7qZyKNIiFsLR1R8XLn5AQVSq6DP3gRd3eHq2H/x3n44zUtLEqB5PIYee0PBGbQpo358xA/CUHtr/RAAPaw==;EndpointSuffix=core.windows.net");
             CloudQueueClient queueClient = cloudStorageAccount.CreateCloudQueueClient();
             CloudQueue queue = queueClient.GetQueueReference("Botqueue");

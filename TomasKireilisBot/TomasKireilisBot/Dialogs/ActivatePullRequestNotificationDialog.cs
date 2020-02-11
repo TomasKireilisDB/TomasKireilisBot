@@ -39,7 +39,7 @@ namespace TomasKireilisBot.Dialogs
             {
                 CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=tomasbotstorage;AccountKey=I4+e7qZyKNIiFsLR1R8XLn5AQVSq6DP3gRd3eHq2H/x3n44zUtLEqB5PIYee0PBGbQpo358xA/CUHtr/RAAPaw==;EndpointSuffix=core.windows.net");
                 CloudQueueClient queueClient = cloudStorageAccount.CreateCloudQueueClient();
-                CloudQueue queue = queueClient.GetQueueReference("Botqueue");
+                CloudQueue queue = queueClient.GetQueueReference("botqueue");
                 await queue.CreateIfNotExistsAsync();
                 CloudQueueMessage message = new CloudQueueMessage(JsonConvert.SerializeObject(queueMessage));
                 await queue.AddMessageAsync(message);

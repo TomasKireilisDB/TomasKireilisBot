@@ -16,7 +16,7 @@ namespace TomasKireilisBot.Dialogs
         private const string DestinationStepMsgText = "(Get active pull requests) or (GPR)";
         private const string OriginStepMsgText = "Do you need extra filters? (y/n)";
         private IInnerBitbucketClient _bitbucketClient;
-        private BitBucketConversationVariables _bitBucketConversationVariables;
+        public BitBucketConversationVariables _bitBucketConversationVariables;
 
         public CheckActivePullRequestsDialog(IInnerBitbucketClient bitbucketClient, BitBucketConversationVariables bitBucketConversationVariables)
             : base(nameof(CheckActivePullRequestsDialog))
@@ -62,10 +62,9 @@ namespace TomasKireilisBot.Dialogs
 
             foreach (var pullRequest in pullRequestList.FindAll(x => x.Open))
             {
-                await stepContext.Context.SendActivityAsync($"Author: {pullRequest.Author.User.Name}", cancellationToken: cancellationToken);
-                await stepContext.Context.SendActivityAsync($"Id: {pullRequest.Id}", cancellationToken: cancellationToken);
-                await stepContext.Context.SendActivityAsync($"Description: {pullRequest.Description}", cancellationToken: cancellationToken);
-                await stepContext.Context.SendActivityAsync($"For more info: NEED LINK THERE", cancellationToken: cancellationToken);
+                await stepContext.Context.SendActivityAsync($"Author: {pullRequest.Author.User.Name}  \n  " +
+                                                            $"Id: {pullRequest.Id} \n  " +
+                                                            $"Description: {pullRequest.Description} \n", cancellationToken: cancellationToken);
             }
 
             return await stepContext.NextAsync(null, cancellationToken);

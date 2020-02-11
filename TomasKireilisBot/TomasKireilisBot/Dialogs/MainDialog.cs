@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net.Mime;
 using System.Threading;
 using System.Threading.Tasks;
+using TomasKireilisBot.DataModels;
 
 namespace TomasKireilisBot.Dialogs
 {
@@ -23,12 +24,12 @@ namespace TomasKireilisBot.Dialogs
         {
             new ExpectedCommand(nameof(CheckActivePullRequestsDialog),"Get active pull requests","GPR"),
             new ExpectedCommand(nameof(ChangePullRequestsConfigurationDialog),"Change pull requests configuration","PRC"),
-            new ExpectedCommand("","Activate pull request notification","APR"),
+            new ExpectedCommand(nameof(ActivatePullRequestNotificationDialog),"Activate pull request notification","APR"),
             new ExpectedCommand("","Deactivate pull request notification","DPR"),
     };
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(CheckActivePullRequestsDialog checkActivePullRequestsDialog, ILogger<MainDialog> logger)
+        public MainDialog(CheckActivePullRequestsDialog checkActivePullRequestsDialog, ActivatePullRequestNotificationDialog activatePullRequestNotificationDialog, ChangePullRequestsConfigurationDialog changePullRequestsConfigurationDialog, ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
             Logger = logger;
@@ -36,6 +37,8 @@ namespace TomasKireilisBot.Dialogs
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
             AddDialog(checkActivePullRequestsDialog);
+            AddDialog(changePullRequestsConfigurationDialog);
+            AddDialog(activatePullRequestNotificationDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,
@@ -48,13 +51,6 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            //var messageText = stepContext.Options?.ToString() ?? "What can I help you with today?\n This is what I can do:   \n" +
-            //                  "Get active pull requests => \"GPR\"   \n" +
-            //                  "Change pull request configuration => \"PRC\"   \n" +
-            //                  "Activate pull request notification => \"APR\"   \n" +
-            //                  "Deactivate pull request notification => \"DPR\"";
-            //var promptMessage = MessageFactory.Text(messageText, messageText, InputHints.ExpectingInput);
-            //return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = promptMessage }, cancellationToken);
             var reply = MessageFactory.Text("What we are going to do today?");
 
             reply.SuggestedActions = new SuggestedActions()
@@ -77,7 +73,7 @@ namespace TomasKireilisBot.Dialogs
             {
                 await stepContext.Context.SendActivityAsync(MessageFactory.Text($"You chosen {foundCommand.LongName}"), cancellationToken);
 
-                return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, null, cancellationToken);
+                return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, new BitBucketConversationVariables(), cancellationToken);
             }
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }

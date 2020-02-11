@@ -12,6 +12,7 @@ namespace TomasKireilisBot.Dialogs
         public string LongName { get; set; }
         public string ShortName { get; set; }
         public string OpenDialogId { get; set; }
+        public object PassingObject { get; set; }
 
         public bool CheckIfCalledThisCommand(string textInput)
         {
@@ -21,7 +22,7 @@ namespace TomasKireilisBot.Dialogs
                 return false;
             }
 
-            if (textInput == LongName.ToLower() || textInput == ShortName.ToLower())
+            if (textInput.ToLower() == LongName.ToLower() || textInput.ToLower() == ShortName.ToLower())
             {
                 return true;
             }

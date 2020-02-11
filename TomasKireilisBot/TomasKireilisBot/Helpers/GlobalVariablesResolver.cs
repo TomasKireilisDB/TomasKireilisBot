@@ -20,6 +20,23 @@ namespace TomasKireilisBot.Helpers
             }
         }
 
+        public static async Task<bool> SetBitBucketConversationVariables(BitBucketConversationVariables bitBucketConversationVariables)
+        {
+            using (StreamWriter r = new StreamWriter("GlobalVariables.json"))
+            {
+                try
+                {
+                    await r.WriteAsync(JsonConvert.SerializeObject(bitBucketConversationVariables));
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
         private static void LoadJson()
         {
         }

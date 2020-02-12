@@ -1,14 +1,11 @@
-﻿using System;
-using Microsoft.Bot.Builder.Dialogs;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
-using Microsoft.WindowsAzure.Storage.Queue.Protocol;
 using Newtonsoft.Json;
-using TomasKireilisBot.DataModels;
-using TomasKireilisBot.Helpers;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 using QueueMessage = TomasKireilisBot.DataModels.QueueMessage;
 
 namespace TomasKireilisBot.Dialogs
@@ -28,7 +25,7 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            ConversationReference reference = new ConversationReference(Id);
+            ConversationReference reference = new ConversationReference(stepContext.Context.Activity.Id, stepContext.Context.Activity.Recipient, stepContext.Context.Activity.From);
             var queueMessage = new QueueMessage
             {
                 ConversationReference = reference,
@@ -39,7 +36,7 @@ namespace TomasKireilisBot.Dialogs
             {
                 CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=tomasbotstorage;AccountKey=I4+e7qZyKNIiFsLR1R8XLn5AQVSq6DP3gRd3eHq2H/x3n44zUtLEqB5PIYee0PBGbQpo358xA/CUHtr/RAAPaw==;EndpointSuffix=core.windows.net");
                 CloudQueueClient queueClient = cloudStorageAccount.CreateCloudQueueClient();
-                CloudQueue queue = queueClient.GetQueueReference("botqueue");
+                CloudQueue queue = queueClient.GetQueueReference("botmessagebacklog");
                 await queue.CreateIfNotExistsAsync();
                 CloudQueueMessage message = new CloudQueueMessage(JsonConvert.SerializeObject(queueMessage));
                 await queue.AddMessageAsync(message);

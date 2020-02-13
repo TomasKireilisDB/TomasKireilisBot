@@ -1,9 +1,8 @@
-using System;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
+using System;
 
 namespace Timer
 {
@@ -18,15 +17,19 @@ namespace Timer
             log.LogInformation($"Connected to Cloud Storage");
             CloudQueueClient queueClient = cloudStorageAccount.CreateCloudQueueClient();
             log.LogInformation($"Added queue client");
-            CloudQueue queue = queueClient.GetQueueReference("botmessagebacklog");
-            await queue.CreateIfNotExistsAsync();
-            log.LogInformation($"Got queue");
-            var cloudQueueMessages = await queue.GetMessagesAsync(10, TimeSpan.FromDays(7), new QueueRequestOptions(), new OperationContext());
-            log.LogInformation($"Gathered messages queue");
-            foreach (var cloudQueueMessage in cloudQueueMessages)
+            CloudQueue backLog = queueClient.GetQueueReference("botmessagebacklog");
+            await backLog.CreateIfNotExistsAsync();
+            CloudQueue botQueue = queueClient.GetQueueReference("botqueue");
+            await backLog.CreateIfNotExistsAsync();
+            log.LogInformation($"Got queues");
+            var cloudBackLogMessages = await backLog.GetMessagesAsync(10, TimeSpan.FromDays(7), new QueueRequestOptions(), new OperationContext());
+            log.LogInformation($"Gathered messages backlog");
+            foreach (var cloudQueueMessage in cloudBackLogMessages)
             {
-                log.LogInformation($"A message");
-                await queue.AddMessageAsync(cloudQueueMessage);
+                await botQueue.AddMessageAsync(cloudQueueMessage, TimeSpan.FromMinutes(5), TimeSpan.Zero, new QueueRequestOptions(), new OperationContext());
+                log.LogInformation($"Message was moved into bot queue");
+                await backLog.AddMessageAsync(cloudQueueMessage, TimeSpan.FromDays(7), TimeSpan.Zero, new QueueRequestOptions(), new OperationContext());
+                log.LogInformation($"Message was recreated in backlog");
             }
         }
     }

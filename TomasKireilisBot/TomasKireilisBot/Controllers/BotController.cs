@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using System.Threading.Tasks;
-using System.Timers;
-using TomasKireilisBot.Services.Timer;
 
 namespace TomasKireilisBot.Controllers
 {
@@ -33,6 +31,7 @@ namespace TomasKireilisBot.Controllers
         {
             // Delegate the processing of the HTTP POST to the adapter.
             // The adapter will invoke the bot.
+
             await Adapter.ProcessAsync(Request, Response, Bot);
         }
     }

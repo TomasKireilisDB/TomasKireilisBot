@@ -16,13 +16,18 @@ namespace TomasKireilisBot.Services.Timer
 
         public List<Timer> List { get; set; } = new List<Timer>();
 
-        public void AddTimer(ConversationReference reference, int seconds)
+        public void AddTimer(ConversationReference reference, int repeatRateInSeconds)
         {
-            var timer = new Timer(_adapter, reference, seconds, List.Count + 1);
+            var timer = new Timer(_adapter, reference, repeatRateInSeconds, List.Count + 1);
 
             Task.Run(() => timer.Start());
 
             List.Add(timer);
+        }
+
+        public void RemoveTimers()
+        {
+            List.Clear();
         }
     }
 }

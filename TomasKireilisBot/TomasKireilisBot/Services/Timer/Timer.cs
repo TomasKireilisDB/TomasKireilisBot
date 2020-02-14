@@ -36,20 +36,23 @@ namespace TomasKireilisBot.Services.Timer
 
         public async Task Start()
         {
-            StartedAt = DateTime.Now;
-            Status = "Running";
+            while (true)
+            {
+                StartedAt = DateTime.Now;
+                Status = "Running";
 
-            await Task.Delay(Seconds * 1000);
+                await Task.Delay(Seconds * 1000);
 
-            FinishedAt = DateTime.Now;
-            Status = "Finished";
+                FinishedAt = DateTime.Now;
+                Status = "Finished";
 
-            await _adapter.ContinueConversationAsync("not-important-for-emulator", ConversationReference, SendMessageAsync);
+                await _adapter.ContinueConversationAsync("5dd4aa78-9c8c-4486-9005-e2579e6ec5e1", ConversationReference, SendMessageAsync);
+            }
         }
 
         private async Task SendMessageAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync($"Timer #{Number} finished! ({Seconds})s");
+            await turnContext.SendActivityAsync($"Timer #{Number} finished! ({Seconds})s", cancellationToken: cancellationToken);
         }
     }
 }

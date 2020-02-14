@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
+using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,7 @@ using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Dialogs;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
+using TomasKireilisBot.Services.Timer;
 
 namespace TomasKireilisBot
 {
@@ -34,6 +36,9 @@ namespace TomasKireilisBot
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
+
+            services.AddSingleton<IAdapterIntegration, BotFrameworkHttpAdapter>();
+            services.AddSingleton<Timers>();
 
             // Create the User state. (Used in this bot's Dialog implementation.)
             services.AddSingleton<UserState>();

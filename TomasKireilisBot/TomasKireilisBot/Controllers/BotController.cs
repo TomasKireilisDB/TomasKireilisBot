@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using System.Threading.Tasks;
+using System.Timers;
+using TomasKireilisBot.Services.Timer;
 
 namespace TomasKireilisBot.Controllers
 {

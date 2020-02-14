@@ -6,14 +6,19 @@ using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using TomasKireilisBot.Services.Timer;
 using QueueMessage = TomasKireilisBot.DataModels.QueueMessage;
+using Timer = System.Threading.Timer;
 
 namespace TomasKireilisBot.Dialogs
 {
-    public partial class ActivatePullRequestNotificationDialog : CancelAndHelpDialog
+    public class ActivatePullRequestNotificationDialog : CancelAndHelpDialog
     {
-        public ActivatePullRequestNotificationDialog() : base(nameof(ActivatePullRequestNotificationDialog))
+        private readonly Timers _timers;
+
+        public ActivatePullRequestNotificationDialog(Timers timers) : base(nameof(ActivatePullRequestNotificationDialog))
         {
+            _timers = timers;
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 FinalStepAsync
@@ -32,20 +37,21 @@ namespace TomasKireilisBot.Dialogs
                 Text = "PullRequestNotification"
             };
             await stepContext.Context.SendActivityAsync("Adding notification... please wait. It might take some time", cancellationToken: cancellationToken);
-            try
-            {
-                CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=tomasbotstorage;AccountKey=I4+e7qZyKNIiFsLR1R8XLn5AQVSq6DP3gRd3eHq2H/x3n44zUtLEqB5PIYee0PBGbQpo358xA/CUHtr/RAAPaw==;EndpointSuffix=core.windows.net");
-                CloudQueueClient queueClient = cloudStorageAccount.CreateCloudQueueClient();
-                CloudQueue queue = queueClient.GetQueueReference("botmessagebacklog");
-                await queue.CreateIfNotExistsAsync();
-                CloudQueueMessage message = new CloudQueueMessage(JsonConvert.SerializeObject(queueMessage));
-                await queue.AddMessageAsync(message);
-            }
-            catch (Exception e)
-            {
-                await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
-                throw;
-            }
+            _timers.AddTimer(stepContext.Context.Activity.GetConversationReference(), 15);
+            //try
+            //{
+            //    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=tomasbotstorage;AccountKey=I4+e7qZyKNIiFsLR1R8XLn5AQVSq6DP3gRd3eHq2H/x3n44zUtLEqB5PIYee0PBGbQpo358xA/CUHtr/RAAPaw==;EndpointSuffix=core.windows.net");
+            //    CloudQueueClient queueClient = cloudStorageAccount.CreateCloudQueueClient();
+            //    CloudQueue queue = queueClient.GetQueueReference("botmessagebacklog");
+            //    await queue.CreateIfNotExistsAsync();
+            //    CloudQueueMessage message = new CloudQueueMessage(JsonConvert.SerializeObject(queueMessage));
+            //    await queue.AddMessageAsync(message);
+            //}
+            //catch (Exception e)
+            //{
+            //    await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
+            //    throw;
+            //}
 
             //if(queue.PeekMessageAsync(,message,cancellationToken) != null)
 

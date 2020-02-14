@@ -27,6 +27,10 @@ namespace TomasKireilisBot.Services.Timer
 
         public void RemoveTimers()
         {
+            foreach (var timer in List)
+            {
+                timer.StopTimer();
+            }
             List.Clear();
         }
     }

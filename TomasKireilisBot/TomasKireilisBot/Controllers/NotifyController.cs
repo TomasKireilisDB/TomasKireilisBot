@@ -62,7 +62,7 @@ namespace TomasKireilisBot.Controllers
         {
             // If you encounter permission-related errors when sending this message, see
             // https://aka.ms/BotTrustServiceUrl
-            await turnContext.SendActivityAsync("proactive hello");
+            await turnContext.SendActivityAsync("proactive hello", cancellationToken: cancellationToken);
         }
     }
 }

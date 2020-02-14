@@ -33,11 +33,12 @@ namespace TomasKireilisBot.Services.Timer
         public int Seconds { get; }
         public DateTime? StartedAt { get; private set; }
         public string Status { get; private set; } = "Started";
+        private bool _active = true;
 
         public async Task Start()
         {
-            await _adapter.ContinueConversationAsync("5dd4aa78-9c8c-4486-9005-e2579e6ec5e1", ConversationReference, SendMessageAsync);
-            while (true)
+            await _adapter.ContinueConversationAsync("Not-important for emulator", ConversationReference, SendMessageAsync);
+            while (_active)
             {
                 StartedAt = DateTime.Now;
                 Status = "Running";
@@ -46,14 +47,22 @@ namespace TomasKireilisBot.Services.Timer
 
                 FinishedAt = DateTime.Now;
                 Status = "Finished";
-
-                await _adapter.ContinueConversationAsync("5dd4aa78-9c8c-4486-9005-e2579e6ec5e1", ConversationReference, SendMessageAsync);
+                if (_active)
+                {
+                    await _adapter.ContinueConversationAsync("5dd4aa78-9c8c-4486-9005-e2579e6ec5e1", ConversationReference, SendMessageAsync);
+                }
             }
+        }
+
+        public void StopTimer()
+        {
+            _active = false;
         }
 
         private async Task SendMessageAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            await turnContext.SendActivityAsync($"Timer #{Number} finished! ({Seconds})s", cancellationToken: cancellationToken);
+            var activity = new Activity("Invoke");
+            await turnContext.SendActivityAsync(activity, cancellationToken: cancellationToken);
         }
     }
 }

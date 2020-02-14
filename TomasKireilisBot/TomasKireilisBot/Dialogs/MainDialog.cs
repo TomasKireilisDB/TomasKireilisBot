@@ -23,11 +23,15 @@ namespace TomasKireilisBot.Dialogs
             new ExpectedCommand(nameof(CheckActivePullRequestsDialog),"Get active pull requests","GPR"),
             new ExpectedCommand(nameof(ChangePullRequestsConfigurationDialog),"Change pull requests configuration","PRC"),
             new ExpectedCommand(nameof(ActivatePullRequestNotificationDialog),"Activate pull request notification","APR"),
-            new ExpectedCommand("","Deactivate pull request notification","DPR"),
+            new ExpectedCommand(nameof(DeActivatePullRequestNotificationDialog),"Deactivate pull request notifications","DPR"),
     };
 
         // Dependency injection uses this constructor to instantiate MainDialog
-        public MainDialog(CheckActivePullRequestsDialog checkActivePullRequestsDialog, ActivatePullRequestNotificationDialog activatePullRequestNotificationDialog, ChangePullRequestsConfigurationDialog changePullRequestsConfigurationDialog, ILogger<MainDialog> logger)
+        public MainDialog(CheckActivePullRequestsDialog checkActivePullRequestsDialog,
+            ActivatePullRequestNotificationDialog activatePullRequestNotificationDialog,
+            DeActivatePullRequestNotificationDialog deActivatePullRequestNotificationDialog,
+            ChangePullRequestsConfigurationDialog changePullRequestsConfigurationDialog,
+            ILogger<MainDialog> logger)
             : base(nameof(MainDialog))
         {
             Logger = logger;
@@ -37,6 +41,7 @@ namespace TomasKireilisBot.Dialogs
             AddDialog(checkActivePullRequestsDialog);
             AddDialog(changePullRequestsConfigurationDialog);
             AddDialog(activatePullRequestNotificationDialog);
+            AddDialog(deActivatePullRequestNotificationDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,
@@ -58,7 +63,7 @@ namespace TomasKireilisBot.Dialogs
                     new CardAction() { Title = "Get active pull requests", Type = ActionTypes.ImBack, Value = "Get active pull requests" },
                     new CardAction() { Title = "Change pull request configuration", Type = ActionTypes.ImBack, Value = "Change pull request configuration" },
                     new CardAction() { Title = "Activate pull request notification", Type = ActionTypes.ImBack, Value = "Activate pull request notification" },
-                    new CardAction() { Title = "Deactivate pull request notification", Type = ActionTypes.ImBack, Value = "Deactivate pull request notification" },
+                    new CardAction() { Title = "Deactivate pull request notifications", Type = ActionTypes.ImBack, Value = "Deactivate pull request notifications" },
                 },
             };
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = reply }, cancellationToken);

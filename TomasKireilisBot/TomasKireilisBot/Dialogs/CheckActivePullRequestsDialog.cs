@@ -72,9 +72,7 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var pullRequestDetails = (PullRequestDetails)stepContext.Options;
-
-            return await stepContext.EndDialogAsync(pullRequestDetails, cancellationToken);
+            return await stepContext.EndDialogAsync(null, cancellationToken);
         }
     }
 }

@@ -36,6 +36,7 @@ namespace TomasKireilisBot.Services.Timer
 
         public async Task Start()
         {
+            await _adapter.ContinueConversationAsync("5dd4aa78-9c8c-4486-9005-e2579e6ec5e1", ConversationReference, SendMessageAsync);
             while (true)
             {
                 StartedAt = DateTime.Now;

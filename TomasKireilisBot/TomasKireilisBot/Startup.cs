@@ -36,7 +36,7 @@ namespace TomasKireilisBot
 
             // Create the storage we'll be using for User and Conversation state. (Memory is great for testing purposes.)
             services.AddSingleton<IStorage, MemoryStorage>();
-
+            services.AddSingleton<IInnerBitbucketClient, InnerBitbucketClient>();
             services.AddSingleton<IAdapterIntegration, BotFrameworkHttpAdapter>();
             services.AddSingleton<Timers>();
 
@@ -58,7 +58,6 @@ namespace TomasKireilisBot
             services.AddSingleton<MainDialog>();
 
             services.AddSingleton<BitBucketConversationVariables>();
-            services.AddSingleton<IInnerBitbucketClient, InnerBitbucketClient>();
 
             services.AddSingleton(new ConcurrentDictionary<string, ConversationReference>());
             //       services.AddSingleton<IConfiguration>(new ConfigurationRoot(new List<IConfigurationProvider>()));

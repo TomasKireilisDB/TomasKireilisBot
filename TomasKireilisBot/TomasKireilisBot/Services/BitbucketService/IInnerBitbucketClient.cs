@@ -8,12 +8,10 @@ namespace TomasKireilisBot.Services.BitbucketService
     public interface IInnerBitbucketClient
     {
         Task<List<PullRequest>> FetchActivePullRequests(
-            BitBucketGlobalVariables bitBucketGlobalVariables,
-            BitBucketPersonalizedVariables bitBucketPersonalizedVariables);
+            BitBucketGlobalVariables bitBucketGlobalVariables);
 
         Task<bool> ApprovePullRequest(
             BitBucketGlobalVariables bitBucketGlobalVariables,
-            BitBucketPersonalizedVariables bitBucketPersonalizedVariables,
             long pullRequestId);
     }
 }

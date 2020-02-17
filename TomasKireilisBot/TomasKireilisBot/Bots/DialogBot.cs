@@ -7,8 +7,14 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TomasKireilisBot.DataModels;
+using TomasKireilisBot.Helpers;
+using TomasKireilisBot.Services.BitbucketService;
 
 namespace TomasKireilisBot.Bots
 {
@@ -21,12 +27,16 @@ namespace TomasKireilisBot.Bots
         where T : Dialog
     {
         protected readonly Dialog Dialog;
+        private readonly BitBucketConversationVariables _conversationVariables;
+        private readonly IInnerBitbucketClient _innerBitbucketClient;
         protected readonly BotState ConversationState;
         protected readonly BotState UserState;
         protected readonly ILogger Logger;
 
-        public DialogBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
+        public DialogBot(IInnerBitbucketClient innerBitbucketClient, ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
         {
+            _conversationVariables = GlobalVariablesResolver.GetBitBucketConversationVariables().Result;
+            _innerBitbucketClient = innerBitbucketClient;
             ConversationState = conversationState;
             UserState = userState;
             Dialog = dialog;
@@ -46,8 +56,52 @@ namespace TomasKireilisBot.Bots
         {
             Logger.LogInformation("Running dialog with Message Activity.");
 
+            await CheckIfApprovePullRequestActivity(turnContext, cancellationToken);
+
             // Run the Dialog with the new message Activity.
             await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
+        }
+
+        private async Task CheckIfApprovePullRequestActivity(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        {
+            var dataList = new List<string>();
+            dataList = turnContext.Activity.Text.Split('/').ToList();
+
+            if (dataList.Count == 5 && dataList[0]?.ToLower() == "approvepullrequest")
+            {
+                await turnContext.SendActivityAsync("CheckingPullRequestStatus...", cancellationToken: cancellationToken);
+                bool resultFound = false;
+
+                foreach (var variable in _conversationVariables.GlobalVariables)
+                {
+                    if (variable.BaseUrl.ToLower() == dataList[1].ToLower() && variable.ProjectName.ToLower() == dataList[2].ToLower() && variable.RepositoryName.ToLower() == dataList[3].ToLower())
+                    {
+                        resultFound = true;
+                        try
+                        {
+                            await _innerBitbucketClient.ApprovePullRequest(variable, long.Parse(dataList[4]));
+                        }
+                        catch (Exception e)
+                        {
+                            await turnContext.SendActivityAsync("Oooops. Something went wrong. Could not approve pull request",
+                                cancellationToken: cancellationToken);
+                            throw;
+                        }
+
+                        break;
+                    }
+                }
+
+                if (!resultFound)
+                {
+                    await turnContext.SendActivityAsync("Could not find such repository. Check project and repository names",
+                        cancellationToken: cancellationToken);
+                }
+                else
+                {
+                    await turnContext.SendActivityAsync("Approved successfully", cancellationToken: cancellationToken);
+                }
+            }
         }
     }
 }

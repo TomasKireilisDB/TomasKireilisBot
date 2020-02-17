@@ -14,26 +14,24 @@ namespace TomasKireilisBot.Services.BitbucketService
         }
 
         public async Task<List<PullRequest>> FetchActivePullRequests(
-            BitBucketGlobalVariables bitBucketGlobalVariables,
-            BitBucketPersonalizedVariables bitBucketPersonalizedVariables)
+            BitBucketGlobalVariables bitBucketGlobalVariables)
         {
             var client = new BitbucketClient(
                 bitBucketGlobalVariables.BaseUrl,
-                bitBucketPersonalizedVariables.UserName,
-                bitBucketPersonalizedVariables.Password ?? bitBucketPersonalizedVariables.PersonalAccessToken);
+                bitBucketGlobalVariables.UserName,
+                bitBucketGlobalVariables.Password ?? bitBucketGlobalVariables.PersonalAccessToken);
             return (await client.GetPullRequestsAsync(bitBucketGlobalVariables.ProjectName,
                 bitBucketGlobalVariables.RepositoryName)).ToList();
         }
 
         public async Task<bool> ApprovePullRequest(
             BitBucketGlobalVariables bitBucketGlobalVariables,
-            BitBucketPersonalizedVariables bitBucketPersonalizedVariables,
             long pullRequestId)
         {
             var client = new BitbucketClient(
                 bitBucketGlobalVariables.BaseUrl,
-                bitBucketPersonalizedVariables.UserName,
-                bitBucketPersonalizedVariables.Password ?? bitBucketPersonalizedVariables.PersonalAccessToken);
+                bitBucketGlobalVariables.UserName,
+                bitBucketGlobalVariables.Password ?? bitBucketGlobalVariables.PersonalAccessToken);
             var rez = await client.ApprovePullRequestAsync(bitBucketGlobalVariables.ProjectName,
                 bitBucketGlobalVariables.RepositoryName,
                 pullRequestId);

@@ -47,7 +47,7 @@ namespace TomasKireilisBot.Bots
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
-            await turnContext.SendActivityAsync("ping", cancellationToken: cancellationToken);
+            await turnContext.SendActivityAsync($"ping { turnContext.Activity.Text}", cancellationToken: cancellationToken);
             await base.OnTurnAsync(turnContext, cancellationToken);
 
             // Save any state changes that might have occured during the turn.

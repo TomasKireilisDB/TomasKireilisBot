@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Bot.Schema.Teams;
 using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
@@ -46,6 +47,7 @@ namespace TomasKireilisBot.Bots
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
+            await turnContext.SendActivityAsync("ping", cancellationToken: cancellationToken);
             await base.OnTurnAsync(turnContext, cancellationToken);
 
             // Save any state changes that might have occured during the turn.

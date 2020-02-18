@@ -2,11 +2,17 @@
     "GlobalVariables": [
         {
             "BaseUrl": "https://bitbucket-new.azurewebsites.net",
-            "ProjectName": "TOM",
-            "RepositoryName": "javaset",
             "UserName": "T",
             "Password": "T",
-            "PersonalAccessToken": "T"
+            "PersonalAccessToken": "",
+            "Projects": [
+                {
+                    "ProjectName": "TOM",
+                    "RepositoryNames": [
+                        "javaset"
+                    ]
+                }
+            ]
         }
     ]
 }

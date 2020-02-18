@@ -39,31 +39,46 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> FetchPullRequests(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            BitBucketConversationVariables = await GlobalVariablesResolver.GetBitBucketConversationVariables();
+            BitBucketConversationVariables = await GlobalVariablesService.GetBitBucketConversationVariables();
             await stepContext.Context.SendActivityAsync("Gathering info...", cancellationToken: cancellationToken);
 
             bool foundAnyPullRequest = false;
-            foreach (var globalVariables in BitBucketConversationVariables.GlobalVariables)
+            foreach (var globalVariable in BitBucketConversationVariables.GlobalVariables)
             {
-                var pullRequestList = new List<PullRequest>();
-
-                try
+                foreach (var project in globalVariable.Projects)
                 {
-                    pullRequestList.AddRange((await _bitbucketClient.FetchActivePullRequests(globalVariables)).FindAll(x => x.Open));
+                    foreach (var repositoryName in project.RepositoryNames)
+                    {
+                        var pullRequestList = new List<PullRequest>();
 
-                    if (pullRequestList.Count > 0) foundAnyPullRequest = true;
-                }
-                catch (Exception e)
-                {
-                    await stepContext.Context.SendActivityAsync("Exception was thrown during fetching data, maybe there in a wrong info provided for fetching information?", cancellationToken: cancellationToken);
-                    await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
-                }
+                        try
+                        {
+                            pullRequestList.AddRange((await _bitbucketClient.FetchActivePullRequests(
+                                globalVariable.BaseUrl,
+                                project.ProjectName,
+                                repositoryName,
+                                globalVariable.PersonalAccessToken,
+                                globalVariable.Password,
+                                globalVariable.UserName)).FindAll(x => x.Open));
 
-                foreach (var pullRequest in pullRequestList)
-                {
-                    var welcomeCard = CreateAdaptiveCardAttachment(pullRequest, globalVariables.BaseUrl, globalVariables.ProjectName, globalVariables.RepositoryName);
-                    var response = MessageFactory.Attachment(welcomeCard);
-                    await stepContext.Context.SendActivityAsync(response, cancellationToken);
+                            if (pullRequestList.Count > 0) foundAnyPullRequest = true;
+                        }
+                        catch (Exception e)
+                        {
+                            await stepContext.Context.SendActivityAsync(
+                                "Exception was thrown during fetching data, maybe there in a wrong info provided for fetching information?",
+                                cancellationToken: cancellationToken);
+                            await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
+                        }
+
+                        foreach (var pullRequest in pullRequestList)
+                        {
+                            var welcomeCard = CreateAdaptiveCardAttachment(pullRequest, globalVariable.BaseUrl, project.ProjectName,
+                                repositoryName);
+                            var response = MessageFactory.Attachment(welcomeCard);
+                            await stepContext.Context.SendActivityAsync(response, cancellationToken);
+                        }
+                    }
                 }
             }
 

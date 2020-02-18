@@ -14,26 +14,37 @@ namespace TomasKireilisBot.Services.BitbucketService
         }
 
         public async Task<List<PullRequest>> FetchActivePullRequests(
-            BitBucketGlobalVariables bitBucketGlobalVariables)
+            string baseUrl,
+            string projectName,
+            string repositoryName,
+            string personalAccessToken,
+            string password,
+            string userName
+            )
         {
             var client = new BitbucketClient(
-                bitBucketGlobalVariables.BaseUrl,
-                bitBucketGlobalVariables.UserName,
-                bitBucketGlobalVariables.Password ?? bitBucketGlobalVariables.PersonalAccessToken);
-            return (await client.GetPullRequestsAsync(bitBucketGlobalVariables.ProjectName,
-                bitBucketGlobalVariables.RepositoryName)).ToList();
+                baseUrl,
+                userName,
+                password ?? personalAccessToken);
+            return (await client.GetPullRequestsAsync(projectName,
+                repositoryName)).ToList();
         }
 
         public async Task<bool> ApprovePullRequest(
-            BitBucketGlobalVariables bitBucketGlobalVariables,
+            string baseUrl,
+            string projectName,
+            string repositoryName,
+            string personalAccessToken,
+            string password,
+            string userName,
             long pullRequestId)
         {
             var client = new BitbucketClient(
-                bitBucketGlobalVariables.BaseUrl,
-                bitBucketGlobalVariables.UserName,
-                bitBucketGlobalVariables.Password ?? bitBucketGlobalVariables.PersonalAccessToken);
-            var rez = await client.ApprovePullRequestAsync(bitBucketGlobalVariables.ProjectName,
-                bitBucketGlobalVariables.RepositoryName,
+                baseUrl,
+                userName,
+                password ?? personalAccessToken);
+            var rez = await client.ApprovePullRequestAsync(projectName,
+                repositoryName,
                 pullRequestId);
             return rez.Approved;
         }

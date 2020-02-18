@@ -61,7 +61,7 @@ namespace TomasKireilisBot.Dialogs
                 Actions = new List<CardAction>()
                 {
                     new CardAction() { Title = "Get active pull requests", Type = ActionTypes.ImBack, Value = "Get active pull requests" },
-                    new CardAction() { Title = "Change pull request configuration", Type = ActionTypes.ImBack, Value = "Change pull request configuration" },
+                    new CardAction() { Title = "Change pull requests configuration", Type = ActionTypes.ImBack, Value = "Change pull requests configuration" },
                     new CardAction() { Title = "Activate pull request notification", Type = ActionTypes.ImBack, Value = "Activate pull request notification" },
                     new CardAction() { Title = "Deactivate pull request notifications", Type = ActionTypes.ImBack, Value = "Deactivate pull request notifications" },
                 },

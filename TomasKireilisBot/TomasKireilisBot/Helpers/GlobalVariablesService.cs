@@ -6,15 +6,18 @@ using TomasKireilisBot.DataModels;
 
 namespace TomasKireilisBot.Helpers
 {
-    public static class GlobalVariablesResolver
+    public static class GlobalVariablesService
     {
         public static async Task<BitBucketConversationVariables> GetBitBucketConversationVariables()
         {
+            return JsonConvert.DeserializeObject<BitBucketConversationVariables>(await GetJsonGlobalVariables());
+        }
+
+        public static async Task<string> GetJsonGlobalVariables()
+        {
             using (StreamReader r = new StreamReader("GlobalVariables.json"))
             {
-                string json = r.ReadToEnd();
-                var bitBucketConversationVariables = JsonConvert.DeserializeObject<BitBucketConversationVariables>(json);
-                return bitBucketConversationVariables;
+                return r.ReadToEnd();
             }
         }
 
@@ -33,10 +36,6 @@ namespace TomasKireilisBot.Helpers
 
                 return true;
             }
-        }
-
-        private static void LoadJson()
-        {
         }
     }
 }

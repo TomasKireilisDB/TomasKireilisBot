@@ -48,6 +48,7 @@ namespace TomasKireilisBot.Bots
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
             await turnContext.SendActivityAsync($"ping { turnContext.Activity.Text}", cancellationToken: cancellationToken);
+            await turnContext.SendActivityAsync($"ping {turnContext.Activity.Type}", cancellationToken: cancellationToken);
             if (turnContext.Activity.Attachments?.Count > 0)
             {
                 await turnContext.SendActivityAsync($"ping {turnContext.Activity.Attachments[0]?.Content}", cancellationToken: cancellationToken);

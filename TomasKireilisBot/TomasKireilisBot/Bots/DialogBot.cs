@@ -65,7 +65,7 @@ namespace TomasKireilisBot.Bots
         private async Task CheckIfApprovePullRequestActivity(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             var dataList = new List<string>();
-            dataList = turnContext.Activity.Text.Split('/').ToList();
+            dataList = turnContext.Activity.Text.Split('>', StringSplitOptions.RemoveEmptyEntries).ToList();
 
             if (dataList.Count == 5 && dataList[0]?.ToLower() == "approvepullrequest")
             {

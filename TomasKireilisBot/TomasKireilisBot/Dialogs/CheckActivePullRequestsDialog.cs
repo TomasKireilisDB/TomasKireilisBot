@@ -114,7 +114,7 @@ namespace TomasKireilisBot.Dialogs
             card.Actions.Add(new SubmitAction()
             {
                 Title = "Approve pull request",
-                Data = $"ApprovePullRequest/{baseUrl}/{projectName}/{repositoryName}/{pullRequest.Id}"
+                Data = $"ApprovePullRequest>{baseUrl}>{projectName}>{repositoryName}>{pullRequest.Id}"
             });
 
             // Create the attachment.

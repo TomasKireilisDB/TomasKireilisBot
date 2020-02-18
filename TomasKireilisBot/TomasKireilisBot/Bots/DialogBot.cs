@@ -85,7 +85,8 @@ namespace TomasKireilisBot.Bots
                         {
                             await turnContext.SendActivityAsync("Oooops. Something went wrong. Could not approve pull request",
                                 cancellationToken: cancellationToken);
-                            throw;
+                            await turnContext.SendActivityAsync(e.Message,
+                                cancellationToken: cancellationToken);
                         }
 
                         break;

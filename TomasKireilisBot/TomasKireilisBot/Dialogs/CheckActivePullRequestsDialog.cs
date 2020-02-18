@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
@@ -41,7 +42,9 @@ namespace TomasKireilisBot.Dialogs
         {
             BitBucketConversationVariables = await GlobalVariablesService.GetBitBucketConversationVariables();
             await stepContext.Context.SendActivityAsync("Gathering info...", cancellationToken: cancellationToken);
-
+            await stepContext.Context.SendActivityAsync(
+                MessageFactory.Attachment(CreateAdaptiveCardAttachment(new Bitbucket.Net.Models.Core.Projects.PullRequest(), "dasda", "dasd", "da")),
+                cancellationToken);
             bool foundAnyPullRequest = false;
             foreach (var globalVariable in BitBucketConversationVariables.GlobalVariables)
             {
@@ -49,7 +52,7 @@ namespace TomasKireilisBot.Dialogs
                 {
                     foreach (var repositoryName in project.RepositoryNames)
                     {
-                        var pullRequestList = new List<PullRequest>();
+                        var pullRequestList = new List<Bitbucket.Net.Models.Core.Projects.PullRequest>();
 
                         try
                         {
@@ -95,7 +98,8 @@ namespace TomasKireilisBot.Dialogs
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
 
-        private Attachment CreateAdaptiveCardAttachment(PullRequest pullRequest, string baseUrl, string projectName, string repositoryName)
+        private Attachment CreateAdaptiveCardAttachment(Bitbucket.Net.Models.Core.Projects.PullRequest pullRequest, string baseUrl,
+            string projectName, string repositoryName)
         {
             AdaptiveCard card = new AdaptiveCard();
 
@@ -105,7 +109,7 @@ namespace TomasKireilisBot.Dialogs
             // Add text to the card.
             card.Body.Add(new TextBlock()
             {
-                Text = $"Author: {pullRequest.Author.User.Name}  \n  "
+                Text = $"Author: {pullRequest.Author?.User.Name}  \n  "
             });
 
             // Add text to the card.
@@ -125,11 +129,12 @@ namespace TomasKireilisBot.Dialogs
             {
                 Text = $"Create date: {pullRequest.CreatedDate} \n"
             });
-
+            PullRequestApprovalExecutionData pr = new PullRequestApprovalExecutionData();
+            pr.ApprovePullRequest = $"ApprovePullRequest>{baseUrl}>{projectName}>{repositoryName}>{pullRequest.Id}";
             card.Actions.Add(new SubmitAction()
             {
                 Title = "Approve pull request",
-                Data = $"approvePullRequest>{baseUrl}>{projectName}>{repositoryName}>{pullRequest.Id}"
+                DataJson = JsonConvert.SerializeObject(pr),
             });
 
             // Create the attachment.

@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Schema.Teams;
+using Newtonsoft.Json;
 using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
@@ -48,11 +49,6 @@ namespace TomasKireilisBot.Bots
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
         {
             await turnContext.SendActivityAsync($"ping { turnContext.Activity.Text}", cancellationToken: cancellationToken);
-            await turnContext.SendActivityAsync($"ping {turnContext.Activity.Type}", cancellationToken: cancellationToken);
-            if (turnContext.Activity.Attachments?.Count > 0)
-            {
-                await turnContext.SendActivityAsync($"ping {turnContext.Activity.Attachments[0]?.Content}", cancellationToken: cancellationToken);
-            }
 
             await base.OnTurnAsync(turnContext, cancellationToken);
 
@@ -64,9 +60,7 @@ namespace TomasKireilisBot.Bots
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             Logger.LogInformation("Running dialog with Message Activity.");
-
             await CheckIfApprovePullRequestActivity(turnContext, cancellationToken);
-
             // Run the Dialog with the new message Activity.
             await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
         }
@@ -74,7 +68,16 @@ namespace TomasKireilisBot.Bots
         private async Task CheckIfApprovePullRequestActivity(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
             var dataList = new List<string>();
-            dataList = turnContext.Activity.Text?.Split('>', StringSplitOptions.RemoveEmptyEntries).ToList();
+            var activityValue = "";
+            try
+            {
+                activityValue = JsonConvert.DeserializeObject<PullRequestApprovalExecutionData>(turnContext.Activity.Value?.ToString()).ApprovePullRequest;
+            }
+            catch
+            {
+                return;
+            }
+            dataList = activityValue.Split('>', StringSplitOptions.RemoveEmptyEntries).ToList();
 
             if (dataList == null)
             {

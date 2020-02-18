@@ -3,23 +3,10 @@
         {
             "BaseUrl": "https://bitbucket-new.azurewebsites.net",
             "ProjectName": "TOM",
-            "RepositoryName": "javaset"
-        }
-    ],
-    "PersonalizedVariables": [
-        {
-            "FullName": "TKIR",
+            "RepositoryName": "javaset",
             "UserName": "T",
             "Password": "T",
-            "PersonalAccessToken": "",
-            "SpecificLoginInfo": [
-                {
-                    "UserName": "",
-                    "Password": "",
-                    "PersonalAccessToken": "",
-                    "BaseUrl": ""
-                }
-            ]
+            "PersonalAccessToken": "T"
         }
     ]
 }

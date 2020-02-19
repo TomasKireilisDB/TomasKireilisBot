@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using TomasKireilisBot.Dialogs;
 using TomasKireilisBot.Services.BitbucketService;
 
 namespace TomasKireilisBot.Bots
@@ -19,8 +20,8 @@ namespace TomasKireilisBot.Bots
     public class DialogAndWelcomeBot<T> : DialogBot<T>
         where T : Dialog
     {
-        public DialogAndWelcomeBot(IInnerBitbucketClient innerBitbucketClient, ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
-            : base(innerBitbucketClient, conversationState, userState, dialog, logger)
+        public DialogAndWelcomeBot(List<ExpectedCommand> expectedCommandsList, IInnerBitbucketClient innerBitbucketClient, ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
+            : base(innerBitbucketClient, conversationState, userState, dialog, logger, expectedCommandsList)
         {
         }
 

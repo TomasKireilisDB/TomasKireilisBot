@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Schema.Teams;
 using Newtonsoft.Json;
 using TomasKireilisBot.DataModels;
+using TomasKireilisBot.Dialogs;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
 
@@ -34,9 +35,10 @@ namespace TomasKireilisBot.Bots
         protected readonly BotState ConversationState;
         protected readonly BotState UserState;
         protected readonly ILogger Logger;
+        private List<ExpectedCommand> _expectedCommandsList;
 
         public DialogBot(IInnerBitbucketClient innerBitbucketClient, ConversationState conversationState, UserState userState, T dialog,
-            ILogger<DialogBot<T>> logger)
+            ILogger<DialogBot<T>> logger, List<ExpectedCommand> expectedCommandsList)
         {
             _conversationVariables = GlobalVariablesService.GetBitBucketConversationVariables().Result;
             _innerBitbucketClient = innerBitbucketClient;
@@ -44,6 +46,7 @@ namespace TomasKireilisBot.Bots
             UserState = userState;
             Dialog = dialog;
             Logger = logger;
+            _expectedCommandsList = expectedCommandsList;
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))
@@ -57,7 +60,6 @@ namespace TomasKireilisBot.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            Logger.LogInformation("Running dialog with Message Activity.");
             await CheckIfApprovePullRequestActivity(turnContext, cancellationToken);
             // Run the Dialog with the new message Activity.
             await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
@@ -69,18 +71,20 @@ namespace TomasKireilisBot.Bots
             var activityValue = "";
             try
             {
-                activityValue = JsonConvert.DeserializeObject<PullRequestApprovalExecutionData>(turnContext.Activity.Value?.ToString()).ApprovePullRequest;
+                activityValue = JsonConvert.DeserializeObject<PullRequestApprovalExecutionData>(turnContext.Activity.Value?.ToString())
+                    .ApprovePullRequest;
             }
             catch
             {
                 return;
             }
-            dataList = activityValue.Split('>', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            if (dataList == null)
+            if (activityValue == null)
             {
                 return;
             }
+
+            dataList = activityValue.Split('>', StringSplitOptions.RemoveEmptyEntries).ToList();
 
             if (dataList.Count == 5 && dataList[0]?.ToLower() == "approvepullrequest")
             {

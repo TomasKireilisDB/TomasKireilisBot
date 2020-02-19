@@ -42,9 +42,6 @@ namespace TomasKireilisBot.Dialogs
         {
             BitBucketConversationVariables = await GlobalVariablesService.GetBitBucketConversationVariables();
             await stepContext.Context.SendActivityAsync("Gathering info...", cancellationToken: cancellationToken);
-            await stepContext.Context.SendActivityAsync(
-                MessageFactory.Attachment(CreateAdaptiveCardAttachment(new Bitbucket.Net.Models.Core.Projects.PullRequest(), "dasda", "dasd", "da")),
-                cancellationToken);
             bool foundAnyPullRequest = false;
             foreach (var globalVariable in BitBucketConversationVariables.GlobalVariables)
             {
@@ -52,7 +49,7 @@ namespace TomasKireilisBot.Dialogs
                 {
                     foreach (var repositoryName in project.RepositoryNames)
                     {
-                        var pullRequestList = new List<Bitbucket.Net.Models.Core.Projects.PullRequest>();
+                        var pullRequestList = new List<PullRequest>();
 
                         try
                         {
@@ -98,7 +95,7 @@ namespace TomasKireilisBot.Dialogs
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
 
-        private Attachment CreateAdaptiveCardAttachment(Bitbucket.Net.Models.Core.Projects.PullRequest pullRequest, string baseUrl,
+        private Attachment CreateAdaptiveCardAttachment(PullRequest pullRequest, string baseUrl,
             string projectName, string repositoryName)
         {
             AdaptiveCard card = new AdaptiveCard();

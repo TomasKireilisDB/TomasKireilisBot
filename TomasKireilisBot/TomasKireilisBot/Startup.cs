@@ -3,8 +3,6 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.6.2
 
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +10,12 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Schema;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using TomasKireilisBot.Bots;
 using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Dialogs;
-using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
 using TomasKireilisBot.Services.Timer;
 
@@ -38,13 +35,21 @@ namespace TomasKireilisBot
             services.AddSingleton<IStorage, MemoryStorage>();
             services.AddSingleton<IInnerBitbucketClient, InnerBitbucketClient>();
             services.AddSingleton<IAdapterIntegration, BotFrameworkHttpAdapter>();
-            services.AddSingleton<Timers>();
+            services.AddTransient<Timers>();
 
             // Create the User state. (Used in this bot's Dialog implementation.)
             services.AddSingleton<UserState>();
 
             // Create the Conversation state. (Used by the Dialog system itself.)
             services.AddSingleton<ConversationState>();
+
+            services.AddSingleton(new List<ExpectedCommand>()
+        {
+            new ExpectedCommand(nameof(CheckActivePullRequestsDialog),"Get active pull requests","GPR"),
+            new ExpectedCommand(nameof(ChangePullRequestsConfigurationDialog),"Change pull requests configuration","PRC"),
+            new ExpectedCommand(nameof(ActivatePullRequestNotificationDialog),"Activate pull request notification","APR"),
+            new ExpectedCommand(nameof(DeActivatePullRequestNotificationDialog),"Deactivate pull request notifications","DPR"),
+    });
 
             services.AddSingleton<CheckActivePullRequestsDialog>();
 

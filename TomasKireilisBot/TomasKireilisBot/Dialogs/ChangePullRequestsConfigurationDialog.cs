@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.Bot.Builder.Dialogs;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,7 +42,23 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var pullRequestDetails = JsonConvert.DeserializeObject<BitBucketConversationVariables>(stepContext.Result.ToString());
+            if (stepContext.Result == null)
+            {
+                await stepContext.Context.SendActivityAsync("Wrong configuration file", cancellationToken: cancellationToken);
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
+
+            BitBucketConversationVariables pullRequestDetails;
+            try
+            {
+                pullRequestDetails = JsonConvert.DeserializeObject<BitBucketConversationVariables>(stepContext.Result.ToString());
+            }
+            catch (Exception e)
+            {
+                await stepContext.Context.SendActivityAsync("Wrong configuration file", cancellationToken: cancellationToken);
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
+
             if (pullRequestDetails == null)
             {
                 await stepContext.Context.SendActivityAsync("Wrong configuration file", cancellationToken: cancellationToken);

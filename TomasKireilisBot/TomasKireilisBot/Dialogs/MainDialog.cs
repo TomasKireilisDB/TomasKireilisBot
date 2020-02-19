@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AdaptiveCards;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using TomasKireilisBot.DataModels;
 
 namespace TomasKireilisBot.Dialogs
@@ -17,24 +20,19 @@ namespace TomasKireilisBot.Dialogs
     public class MainDialog : ComponentDialog
     {
         protected readonly ILogger Logger;
-
-        private readonly List<ExpectedCommand> _expectedCommandsList = new List<ExpectedCommand>()
-        {
-            new ExpectedCommand(nameof(CheckActivePullRequestsDialog),"Get active pull requests","GPR"),
-            new ExpectedCommand(nameof(ChangePullRequestsConfigurationDialog),"Change pull requests configuration","PRC"),
-            new ExpectedCommand(nameof(ActivatePullRequestNotificationDialog),"Activate pull request notification","APR"),
-            new ExpectedCommand(nameof(DeActivatePullRequestNotificationDialog),"Deactivate pull request notifications","DPR"),
-    };
+        private List<ExpectedCommand> _expectedCommandsList;
 
         // Dependency injection uses this constructor to instantiate MainDialog
         public MainDialog(CheckActivePullRequestsDialog checkActivePullRequestsDialog,
             ActivatePullRequestNotificationDialog activatePullRequestNotificationDialog,
             DeActivatePullRequestNotificationDialog deActivatePullRequestNotificationDialog,
             ChangePullRequestsConfigurationDialog changePullRequestsConfigurationDialog,
-            ILogger<MainDialog> logger)
+
+            ILogger<MainDialog> logger, List<ExpectedCommand> expectedCommandsList)
             : base(nameof(MainDialog))
         {
             Logger = logger;
+            _expectedCommandsList = expectedCommandsList;
 
             AddDialog(new TextPrompt(nameof(TextPrompt)));
             AddDialog(new ChoicePrompt(nameof(ChoicePrompt)));
@@ -54,19 +52,18 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var reply = MessageFactory.Text("What we are going to do today?");
-
-            reply.SuggestedActions = new SuggestedActions()
+            var cardActionValue = await GetCardActionValueAsync(stepContext.Context);
+            if (cardActionValue != null)
             {
-                Actions = new List<CardAction>()
+                var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand(cardActionValue));
+                if (foundCommand != null)
                 {
-                    new CardAction() { Title = "Get active pull requests", Type = ActionTypes.ImBack, Value = "Get active pull requests" },
-                    new CardAction() { Title = "Change pull requests configuration", Type = ActionTypes.ImBack, Value = "Change pull requests configuration" },
-                    new CardAction() { Title = "Activate pull request notification", Type = ActionTypes.ImBack, Value = "Activate pull request notification" },
-                    new CardAction() { Title = "Deactivate pull request notifications", Type = ActionTypes.ImBack, Value = "Deactivate pull request notifications" },
-                },
-            };
-            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = reply }, cancellationToken);
+                    return await stepContext.NextAsync(cardActionValue, cancellationToken);
+                }
+            }
+            var reply = (Activity)MessageFactory.Attachment(CreateAdaptiveCardAttachment());
+            await stepContext.Context.SendActivityAsync(reply, cancellationToken);
+            return await stepContext.NextAsync(null, cancellationToken);
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
@@ -74,11 +71,68 @@ namespace TomasKireilisBot.Dialogs
             var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand((string)stepContext.Result));
             if (foundCommand != null)
             {
-                await stepContext.Context.SendActivityAsync(MessageFactory.Text($"You chosen {foundCommand.LongName}"), cancellationToken);
-
                 return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, new BitBucketConversationVariables(), cancellationToken);
             }
             return await stepContext.EndDialogAsync(null, cancellationToken);
+        }
+
+        private Attachment CreateAdaptiveCardAttachment()
+        {
+            AdaptiveCard card = new AdaptiveCard();
+
+            // Add text to the card.
+            card.Body.Add(new TextBlock()
+            {
+                Text = "Hi, what are you up to?"
+            });
+
+            card.Actions.Add(new SubmitAction()
+            {
+                Title = "Get active pull requests",
+                DataJson = JsonConvert.SerializeObject(new CardAction() { Title = "Get active pull requests", Type = ActionTypes.ImBack, Value = "Get active pull requests" }),
+            });
+
+            card.Actions.Add(new SubmitAction()
+            {
+                Title = "Change pull requests configuration",
+                DataJson = JsonConvert.SerializeObject(new CardAction() { Title = "Change pull requests configuration", Type = ActionTypes.ImBack, Value = "Change pull requests configuration" }),
+            });
+
+            card.Actions.Add(new SubmitAction()
+            {
+                Title = "Activate pull request notification",
+                DataJson = JsonConvert.SerializeObject(new CardAction() { Title = "Activate pull request notification", Type = ActionTypes.ImBack, Value = "Activate pull request notification" }),
+            });
+
+            card.Actions.Add(new SubmitAction()
+            {
+                Title = "Deactivate pull request notifications",
+                DataJson = JsonConvert.SerializeObject(new CardAction() { Title = "Deactivate pull request notifications", Type = ActionTypes.ImBack, Value = "Deactivate pull request notifications" }),
+            });
+
+            // Create the attachment.
+            Attachment attachment = new Attachment()
+            {
+                ContentType = AdaptiveCard.ContentType,
+                Content = card
+            };
+            return attachment;
+        }
+
+        private async Task<string> GetCardActionValueAsync(ITurnContext turnContext)
+        {
+            if (turnContext.Activity.Value == null)
+            {
+                return null;
+            }
+            try
+            {
+                return JsonConvert.DeserializeObject<CardAction>(turnContext.Activity.Value.ToString()).Value?.ToString();
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

@@ -42,13 +42,10 @@ namespace TomasKireilisBot.Services.BitbucketService
                 baseUrl,
                 userName,
                 password ?? personalAccessToken);
-            var rez = await client.UnwatchPullRequestAsync(projectName,
-                repositoryName,
-                pullRequestId);
             var rez1 = await client.ApprovePullRequestAsync(projectName,
                 repositoryName,
                 pullRequestId);
-            return rez;
+            return rez1.Approved;
         }
     }
 }

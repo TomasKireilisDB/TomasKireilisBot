@@ -23,7 +23,7 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            await stepContext.Context.SendActivityAsync("Removing notifications... please wait. It might take some time", cancellationToken: cancellationToken);
+            await stepContext.Context.SendActivityAsync($"Currently are {_timers.List.Count} notifications. Removing notifications... please wait. It might take some time.", cancellationToken: cancellationToken);
             _timers.RemoveTimers();
             //try
             //{

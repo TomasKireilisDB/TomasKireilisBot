@@ -31,7 +31,7 @@ namespace TomasKireilisBot.Dialogs
                 ConversationReference = reference,
                 Text = "PullRequestNotification"
             };
-            await stepContext.Context.SendActivityAsync("Adding notification... please wait. It might take some time", cancellationToken: cancellationToken);
+            await stepContext.Context.SendActivityAsync($"Adding notification... please wait. It might take some time. Timers working {_timers.List.Count}", cancellationToken: cancellationToken);
             await _timers.AddTimer(stepContext.Context.Activity.GetConversationReference(), 15);
             //try
             //{

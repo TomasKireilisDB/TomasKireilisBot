@@ -35,7 +35,7 @@ namespace TomasKireilisBot
             services.AddSingleton<IStorage, MemoryStorage>();
             services.AddSingleton<IInnerBitbucketClient, InnerBitbucketClient>();
             services.AddSingleton<IAdapterIntegration, BotFrameworkHttpAdapter>();
-            services.AddTransient<Timers>();
+            services.AddSingleton<Timers>();
 
             // Create the User state. (Used in this bot's Dialog implementation.)
             services.AddSingleton<UserState>();

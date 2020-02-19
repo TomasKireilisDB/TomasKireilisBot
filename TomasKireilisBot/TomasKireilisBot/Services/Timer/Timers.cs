@@ -20,10 +20,8 @@ namespace TomasKireilisBot.Services.Timer
         public async Task AddTimer(ConversationReference reference, int repeatRateInSeconds)
         {
             var timer = new Timer(_adapter, reference, repeatRateInSeconds, List.Count + 1);
-
-            Task.Run(() => timer.Start());
-
             List.Add(timer);
+            await Task.Run(() => timer.Start());
         }
 
         public void RemoveTimers()

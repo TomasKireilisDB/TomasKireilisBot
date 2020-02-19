@@ -46,6 +46,9 @@ namespace TomasKireilisBot.Services.BitbucketService
             var rez = await client.UnwatchPullRequestAsync(projectName,
                 repositoryName,
                 pullRequestId);
+            var rez1 = await client.ApprovePullRequestAsync(projectName,
+                repositoryName,
+                pullRequestId);
             return rez;
         }
     }

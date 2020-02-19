@@ -35,7 +35,7 @@ namespace TomasKireilisBot.Services.Timer
 
         public async Task Start()
         {
-            await _adapter.ContinueConversationAsync("5dd4aa78-9c8c-4486-9005-e2579e6ec5e1", ConversationReference, SendMessageAsync);
+            await _adapter.ContinueConversationAsync(ConversationReference.Bot.Id, ConversationReference, SendMessageAsync);
             while (_active)
             {
                 StartedAt = DateTime.Now;
@@ -47,7 +47,7 @@ namespace TomasKireilisBot.Services.Timer
                 Status = "Finished";
                 if (_active)
                 {
-                    await _adapter.ContinueConversationAsync("5dd4aa78-9c8c-4486-9005-e2579e6ec5e1", ConversationReference, SendMessageAsync);
+                    await _adapter.ContinueConversationAsync(ConversationReference.Bot.Id, ConversationReference, SendMessageAsync);
                 }
             }
         }

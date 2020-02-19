@@ -1,14 +1,7 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Queue;
-using Newtonsoft.Json;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TomasKireilisBot.Services.Timer;
-using QueueMessage = TomasKireilisBot.DataModels.QueueMessage;
-using Timer = System.Threading.Timer;
 
 namespace TomasKireilisBot.Dialogs
 {

@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Bot.Builder.Integration;
+﻿using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Schema;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace TomasKireilisBot.Services.Timer
 {
@@ -16,7 +17,7 @@ namespace TomasKireilisBot.Services.Timer
 
         public List<Timer> List { get; set; } = new List<Timer>();
 
-        public void AddTimer(ConversationReference reference, int repeatRateInSeconds)
+        public async Task AddTimer(ConversationReference reference, int repeatRateInSeconds)
         {
             var timer = new Timer(_adapter, reference, repeatRateInSeconds, List.Count + 1);
 

@@ -3,16 +3,15 @@
 //
 // Generated with Bot Builder V4 SDK Template for Visual Studio CoreBot v4.6.2
 
+using AdaptiveCards;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AdaptiveCards;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using TomasKireilisBot.DataModels;
 
 namespace TomasKireilisBot.Dialogs

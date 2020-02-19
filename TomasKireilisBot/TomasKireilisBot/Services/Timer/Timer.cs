@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Integration;
 using Microsoft.Bot.Schema;
-using System.Collections.Generic;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Bot.Builder;
-using Microsoft.Extensions.Logging;
 
 namespace TomasKireilisBot.Services.Timer
 {
@@ -37,7 +35,7 @@ namespace TomasKireilisBot.Services.Timer
 
         public async Task Start()
         {
-            await _adapter.ContinueConversationAsync("Not-important for emulator", ConversationReference, SendMessageAsync);
+            await _adapter.ContinueConversationAsync("5dd4aa78-9c8c-4486-9005-e2579e6ec5e1", ConversationReference, SendMessageAsync);
             while (_active)
             {
                 StartedAt = DateTime.Now;
@@ -61,8 +59,8 @@ namespace TomasKireilisBot.Services.Timer
 
         private async Task SendMessageAsync(ITurnContext turnContext, CancellationToken cancellationToken)
         {
-            var activity = new Activity("Invoke");
-            await turnContext.SendActivityAsync(activity, cancellationToken: cancellationToken);
+            // var activity = new Activity("Invoke");
+            await turnContext.SendActivityAsync("Hey here is pull request", cancellationToken: cancellationToken);
         }
     }
 }

@@ -3,7 +3,6 @@ using Bitbucket.Net.Models.Core.Projects;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TomasKireilisBot.DataModels;
 
 namespace TomasKireilisBot.Services.BitbucketService
 {

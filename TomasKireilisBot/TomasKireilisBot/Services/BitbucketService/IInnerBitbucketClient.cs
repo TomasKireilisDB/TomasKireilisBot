@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Bitbucket.Net.Models.Core.Projects;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Bitbucket.Net.Models.Core.Projects;
-using TomasKireilisBot.DataModels;
 
 namespace TomasKireilisBot.Services.BitbucketService
 {

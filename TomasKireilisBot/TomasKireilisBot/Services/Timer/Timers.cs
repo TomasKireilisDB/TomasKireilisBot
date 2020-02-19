@@ -21,7 +21,7 @@ namespace TomasKireilisBot.Services.Timer
         {
             var timer = new Timer(_adapter, reference, repeatRateInSeconds, List.Count + 1);
             List.Add(timer);
-            await Task.Run(() => timer.Start());
+            Task.Run(() => timer.Start());
         }
 
         public void RemoveTimers()

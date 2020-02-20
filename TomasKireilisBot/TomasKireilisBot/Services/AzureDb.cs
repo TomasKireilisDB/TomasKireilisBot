@@ -42,7 +42,7 @@ namespace TomasKireilisBot.Services
             else
             {
                 var defaultConfig = new Dictionary<string, object>();
-                defaultConfig.Add(userId, JsonConvert.SerializeObject(await GlobalVariablesService.GetDefaultJsonGlobalVariables()));
+                defaultConfig.Add(userId, await GlobalVariablesService.GetDefaultJsonGlobalVariables());
                 await _myStorage.WriteAsync(defaultConfig);
                 return true;
             }

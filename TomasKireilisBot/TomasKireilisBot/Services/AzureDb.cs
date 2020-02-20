@@ -24,8 +24,8 @@ namespace TomasKireilisBot.Services
 
         public async Task<BitBucketConversationVariables> GetUserConfigurationsAsync(string userId)
         {
-            var response = (Dictionary<string, string>)await _myStorage.ReadAsync(new[] { userId });
-            if (response.TryGetValue(userId, out string value))
+            var response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId });
+            if (response.TryGetValue(userId, out object value))
             {
                 var re = value.ToString();
             }
@@ -34,8 +34,8 @@ namespace TomasKireilisBot.Services
 
         public async Task<bool> UpdateUserDefaultDbConfigurations(string userId)
         {
-            var response = (Dictionary<string, string>)await _myStorage.ReadAsync(new[] { userId });
-            if (response.TryGetValue(userId, out string value))
+            var response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId });
+            if (response.TryGetValue(userId, out object value))
             {
                 return false;
             }

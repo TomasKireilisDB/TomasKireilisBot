@@ -1,5 +1,6 @@
 ﻿using Microsoft.Bot.Builder.Azure;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TomasKireilisBot.DataModels;
@@ -34,16 +35,16 @@ namespace TomasKireilisBot.Services
 
         public async Task<bool> UpdateUserDefaultDbConfigurations(string userId)
         {
-            var response = new Dictionary<string, object>();
-            response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId }) ?? new Dictionary<string, object>();
-            if (response.TryGetValue(userId, out object value))
-            {
-                return false;
-            }
-            else
+            //var response = new Dictionary<string, object>();
+            //response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId }) ?? new Dictionary<string, object>();
+            //if (response.TryGetValue(userId, out object value))
+            //{
+            //    return false;
+            //}
+            //else
             {
                 IDictionary<string, object> defaultConfig = new Dictionary<string, object>();
-                defaultConfig.Add(userId, await GlobalVariablesService.GetDefaultJsonGlobalVariables());
+                defaultConfig.Add(userId, JObject.Parse(await GlobalVariablesService.GetDefaultJsonGlobalVariables()));
                 await _myStorage.WriteAsync(defaultConfig);
                 return true;
             }

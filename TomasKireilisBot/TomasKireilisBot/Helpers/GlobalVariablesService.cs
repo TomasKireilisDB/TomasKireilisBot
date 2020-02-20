@@ -3,17 +3,21 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using TomasKireilisBot.DataModels;
+using TomasKireilisBot.Services;
 
 namespace TomasKireilisBot.Helpers
 {
     public static class GlobalVariablesService
     {
-        public static async Task<BitBucketConversationVariables> GetBitBucketConversationVariables()
+        private static readonly AzureDb _azureDb = new AzureDb();
+
+        public static async Task<BitBucketConversationVariables> GetBitBucketConversationVariables(string userId)
         {
-            return JsonConvert.DeserializeObject<BitBucketConversationVariables>(await GetJsonGlobalVariables());
+            return await _azureDb.GetUserConfigurationsAsync(userId);
+            // return JsonConvert.DeserializeObject<BitBucketConversationVariables>(await GetJsonGlobalVariables());
         }
 
-        public static async Task<string> GetJsonGlobalVariables()
+        public static async Task<string> GetDefaultJsonGlobalVariables()
         {
             using (StreamReader r = new StreamReader("GlobalVariables.json"))
             {
@@ -36,6 +40,12 @@ namespace TomasKireilisBot.Helpers
 
                 return true;
             }
+        }
+
+        public static async Task<bool> SetDefaultBitBucketConversationVariables(string userId)
+        {
+            await _azureDb.UpdateUserDefaultDbConfigurations(userId);
+            return true;
         }
     }
 }

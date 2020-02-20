@@ -29,7 +29,6 @@ namespace TomasKireilisBot.Bots
         where T : Dialog
     {
         protected readonly Dialog Dialog;
-        private readonly BitBucketConversationVariables _conversationVariables;
         private readonly IInnerBitbucketClient _innerBitbucketClient;
         protected readonly BotState ConversationState;
         protected readonly BotState UserState;
@@ -39,7 +38,6 @@ namespace TomasKireilisBot.Bots
         public DialogBot(IInnerBitbucketClient innerBitbucketClient, ConversationState conversationState, UserState userState, T dialog,
             ILogger<DialogBot<T>> logger, List<ExpectedCommand> expectedCommandsList)
         {
-            _conversationVariables = GlobalVariablesService.GetBitBucketConversationVariables().Result;
             _innerBitbucketClient = innerBitbucketClient;
             ConversationState = conversationState;
             UserState = userState;
@@ -90,7 +88,11 @@ namespace TomasKireilisBot.Bots
                 await turnContext.SendActivityAsync("CheckingPullRequestStatus...", cancellationToken: cancellationToken);
                 bool resultFound = false;
 
-                foreach (var globalVariable in _conversationVariables.GlobalVariables)
+                foreach (
+                    var globalVariable
+                    in (await GlobalVariablesService.GetBitBucketConversationVariables(turnContext.Activity.Recipient.Id)).GlobalVariables
+                    )
+
                 {
                     foreach (var project in globalVariable.Projects)
                     {

@@ -32,8 +32,12 @@ namespace TomasKireilisBot.Dialogs
             //var configFile = new Attachment();
             //configFile.Content = GlobalVariablesService.GetJsonGlobalVariables();
             //fileActivity.Attachments.Add(configFile);
-            await stepContext.Context.SendActivityAsync(await GlobalVariablesService.GetJsonGlobalVariables(), cancellationToken: cancellationToken);
-            //    await stepContext.Context.SendActivityAsync("Please provide configuration file", cancellationToken: cancellationToken);
+
+            await stepContext.Context.SendActivityAsync(
+                JsonConvert.SerializeObject(
+                await GlobalVariablesService.GetBitBucketConversationVariables(
+                    stepContext.Context.Activity.Recipient.Id)), cancellationToken: cancellationToken);
+
             var reply = MessageFactory.Text("Please provide configuration file");
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = reply }, cancellationToken);
         }

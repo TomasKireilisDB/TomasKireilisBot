@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using TomasKireilisBot.Bots;
 using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Dialogs;
+using TomasKireilisBot.Services;
 using TomasKireilisBot.Services.BitbucketService;
 using TomasKireilisBot.Services.Timer;
 
@@ -42,6 +43,8 @@ namespace TomasKireilisBot
 
             // Create the Conversation state. (Used by the Dialog system itself.)
             services.AddSingleton<ConversationState>();
+
+            services.AddSingleton<AzureDb>();
 
             services.AddSingleton(new List<ExpectedCommand>()
         {

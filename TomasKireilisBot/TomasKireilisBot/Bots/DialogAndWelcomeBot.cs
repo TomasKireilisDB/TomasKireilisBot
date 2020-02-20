@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TomasKireilisBot.Dialogs;
+using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
 
 namespace TomasKireilisBot.Bots
@@ -29,6 +30,7 @@ namespace TomasKireilisBot.Bots
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
+                    await GlobalVariablesService.SetDefaultBitBucketConversationVariables(member.Id);
                     var reply = MessageFactory.Text("Hello");
                     await turnContext.SendActivityAsync(reply, cancellationToken);
                     await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);

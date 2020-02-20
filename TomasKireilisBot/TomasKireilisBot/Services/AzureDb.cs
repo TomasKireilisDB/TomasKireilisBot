@@ -34,7 +34,8 @@ namespace TomasKireilisBot.Services
 
         public async Task<bool> UpdateUserDefaultDbConfigurations(string userId)
         {
-            var response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId });
+            var response = new Dictionary<string, object>();
+            response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId }) ?? new Dictionary<string, object>();
             if (response.TryGetValue(userId, out object value))
             {
                 return false;

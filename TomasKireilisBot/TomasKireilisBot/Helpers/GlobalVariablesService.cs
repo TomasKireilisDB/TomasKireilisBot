@@ -44,8 +44,7 @@ namespace TomasKireilisBot.Helpers
 
         public static async Task<bool> SetDefaultBitBucketConversationVariables(string userId)
         {
-            await _azureDb.UpdateUserDefaultDbConfigurations(userId);
-            return true;
+            return await _azureDb.UpdateUserDefaultDbConfigurations(userId);
         }
     }
 }

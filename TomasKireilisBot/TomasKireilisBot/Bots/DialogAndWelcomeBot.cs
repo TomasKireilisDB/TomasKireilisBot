@@ -31,7 +31,7 @@ namespace TomasKireilisBot.Bots
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    bool test = false;
+                    bool test = true;
                     try
                     {
                         test = await GlobalVariablesService.SetDefaultBitBucketConversationVariables(member.Id);

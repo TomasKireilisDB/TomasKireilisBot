@@ -1,4 +1,5 @@
 ﻿using Microsoft.Bot.Builder.Azure;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TomasKireilisBot.DataModels;
@@ -23,8 +24,8 @@ namespace TomasKireilisBot.Services
 
         public async Task<BitBucketConversationVariables> GetUserConfigurationsAsync(string userId)
         {
-            var response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId });
-            if (response.TryGetValue(userId, out object value))
+            var response = (Dictionary<string, string>)await _myStorage.ReadAsync(new[] { userId });
+            if (response.TryGetValue(userId, out string value))
             {
                 var re = value.ToString();
             }
@@ -33,15 +34,15 @@ namespace TomasKireilisBot.Services
 
         public async Task<bool> UpdateUserDefaultDbConfigurations(string userId)
         {
-            var response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId });
-            if (response.TryGetValue(userId, out object value))
+            var response = (Dictionary<string, string>)await _myStorage.ReadAsync(new[] { userId });
+            if (response.TryGetValue(userId, out string value))
             {
                 return false;
             }
             else
             {
                 var defaultConfig = new Dictionary<string, object>();
-                defaultConfig.Add(userId, await GlobalVariablesService.GetDefaultJsonGlobalVariables());
+                defaultConfig.Add(userId, JsonConvert.SerializeObject(await GlobalVariablesService.GetDefaultJsonGlobalVariables()));
                 await _myStorage.WriteAsync(defaultConfig);
                 return true;
             }

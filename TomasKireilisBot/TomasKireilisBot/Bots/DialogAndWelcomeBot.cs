@@ -7,6 +7,7 @@ using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +31,14 @@ namespace TomasKireilisBot.Bots
             {
                 if (member.Id != turnContext.Activity.Recipient.Id)
                 {
-                    await GlobalVariablesService.SetDefaultBitBucketConversationVariables(member.Id);
+                    try
+                    {
+                        await GlobalVariablesService.SetDefaultBitBucketConversationVariables(member.Id);
+                    }
+                    catch (Exception e)
+                    {
+                        await turnContext.SendActivityAsync(e.Message);
+                    }
                     var reply = MessageFactory.Text("Hello");
                     await turnContext.SendActivityAsync(reply, cancellationToken);
                     await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);

@@ -70,7 +70,7 @@ namespace TomasKireilisBot.Dialogs
             var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand((string)stepContext.Result));
             if (foundCommand != null)
             {
-                return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, new BitBucketConversationVariables(), cancellationToken);
+                return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, new BitBucketConversationVariables() { Data = (string)stepContext.Result }, cancellationToken);
             }
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }

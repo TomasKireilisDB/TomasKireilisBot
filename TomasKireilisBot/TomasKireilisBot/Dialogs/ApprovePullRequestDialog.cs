@@ -36,14 +36,14 @@ namespace TomasKireilisBot.Dialogs
             var activityValue = "";
             try
             {
-                activityValue = stepContext.Context.Activity.Value;
+                activityValue = ((BitBucketConversationVariables)stepContext.Options).Data;
             }
             catch
             {
                 return await stepContext.EndDialogAsync(null, cancellationToken);
             }
 
-            if (activityValue == null)
+            if (string.IsNullOrEmpty(activityValue))
             {
                 return await stepContext.EndDialogAsync(null, cancellationToken);
             }

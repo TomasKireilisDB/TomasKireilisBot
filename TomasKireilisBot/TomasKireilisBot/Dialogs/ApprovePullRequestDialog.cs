@@ -38,7 +38,7 @@ namespace TomasKireilisBot.Dialogs
                 var activityValue = "";
                 try
                 {
-                    activityValue = ((BitBucketConversationVariables)stepContext.Options).Data;
+                    activityValue = stepContext.Options.ToString();
                 }
                 catch
                 {

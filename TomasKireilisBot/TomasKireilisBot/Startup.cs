@@ -37,6 +37,7 @@ namespace TomasKireilisBot
             services.AddSingleton<IInnerBitbucketClient, InnerBitbucketClient>();
             services.AddSingleton<IAdapterIntegration, BotFrameworkHttpAdapter>();
             services.AddSingleton<Timers>();
+            services.AddSingleton<BitBucketConversationVariables>();
 
             // Create the User state. (Used in this bot's Dialog implementation.)
             services.AddSingleton<UserState>();
@@ -55,6 +56,7 @@ namespace TomasKireilisBot
             new ExpectedCommand(nameof(ApprovePullRequestDialog),"approvepullrequest>","approvepullrequest>"),
     });
 
+            // Create Dialogs
             services.AddSingleton<CheckActivePullRequestsDialog>();
 
             services.AddSingleton<ChangePullRequestsConfigurationDialog>();
@@ -68,10 +70,7 @@ namespace TomasKireilisBot
             // The MainDialog that will be run by the bot.
             services.AddSingleton<MainDialog>();
 
-            services.AddSingleton<BitBucketConversationVariables>();
-
             services.AddSingleton(new ConcurrentDictionary<string, ConversationReference>());
-            //       services.AddSingleton<IConfiguration>(new ConfigurationRoot(new List<IConfigurationProvider>()));
 
             // Create the bot as a transient. In this case the ASP Controller is expecting an IBot.
             services.AddTransient<IBot, DialogAndWelcomeBot<MainDialog>>();

@@ -6,6 +6,5 @@ namespace TomasKireilisBot.DataModels
     {
         public string PushNotifications { get; set; }
         public List<BitBucketGlobalVariables> GlobalVariables = new List<BitBucketGlobalVariables>();
-        public string Data { get; set; }
     }
 }

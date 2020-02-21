@@ -31,7 +31,8 @@ namespace TomasKireilisBot.Services
                 var jObject = JObject.Parse(value.ToString());
                 return JsonConvert.DeserializeObject<BitBucketConversationVariables>(jObject.ToString());
             }
-            return null;
+            await UpdateUserDefaultDbConfigurations(userId);
+            return await GetUserConfigurationsAsync(userId);
         }
 
         public async Task<bool> SetUserConfigurationsAsync(

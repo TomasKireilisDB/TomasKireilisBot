@@ -38,9 +38,10 @@ namespace TomasKireilisBot.Bots
                     }
                     catch (Exception e)
                     {
+                        await turnContext.SendActivityAsync("Could not establish connection between bot and database. Some features may not work correctly");
                         await turnContext.SendActivityAsync(e.Message);
                     }
-                    await turnContext.SendActivityAsync(test.ToString());
+
                     var reply = MessageFactory.Text("Hello");
                     await turnContext.SendActivityAsync(reply, cancellationToken);
                     await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);

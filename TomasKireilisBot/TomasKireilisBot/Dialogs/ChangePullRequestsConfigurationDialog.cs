@@ -36,7 +36,7 @@ namespace TomasKireilisBot.Dialogs
             await stepContext.Context.SendActivityAsync(
                 JsonConvert.SerializeObject(
                 await GlobalVariablesService.GetBitBucketConversationVariables(
-                    stepContext.Context.Activity.Recipient.Id)), cancellationToken: cancellationToken);
+                    stepContext.Context.Activity.Recipient.Id)) ?? await GlobalVariablesService.GetDefaultJsonGlobalVariables(), cancellationToken: cancellationToken);
 
             var reply = MessageFactory.Text("Please provide configuration file");
             return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = reply }, cancellationToken);

@@ -26,6 +26,7 @@ namespace TomasKireilisBot.Dialogs
         public MainDialog(CheckActivePullRequestsDialog checkActivePullRequestsDialog,
             ActivatePullRequestNotificationDialog activatePullRequestNotificationDialog,
             DeActivatePullRequestNotificationDialog deActivatePullRequestNotificationDialog,
+            ApprovePullRequestDialog approvePullRequestDialog,
             ChangePullRequestsConfigurationDialog changePullRequestsConfigurationDialog,
 
             ILogger<MainDialog> logger, List<ExpectedCommand> expectedCommandsList)
@@ -40,6 +41,7 @@ namespace TomasKireilisBot.Dialogs
             AddDialog(changePullRequestsConfigurationDialog);
             AddDialog(activatePullRequestNotificationDialog);
             AddDialog(deActivatePullRequestNotificationDialog);
+            AddDialog(approvePullRequestDialog);
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 IntroStepAsync,

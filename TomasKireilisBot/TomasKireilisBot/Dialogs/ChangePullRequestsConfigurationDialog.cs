@@ -67,7 +67,7 @@ namespace TomasKireilisBot.Dialogs
                 return await stepContext.EndDialogAsync(null, cancellationToken);
             }
 
-            var rez = await GlobalVariablesService.SetBitBucketConversationVariables(pullRequestDetails);
+            var rez = await GlobalVariablesService.SetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id, pullRequestDetails);
             if (!rez)
             {
                 await stepContext.Context.SendActivityAsync("Could not update configuration file", cancellationToken: cancellationToken);

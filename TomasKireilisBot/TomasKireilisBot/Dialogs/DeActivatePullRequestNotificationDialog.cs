@@ -1,6 +1,7 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using System.Threading;
 using System.Threading.Tasks;
+using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.Timer;
 
 namespace TomasKireilisBot.Dialogs
@@ -23,24 +24,10 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            await stepContext.Context.SendActivityAsync($"Currently are {_timers.List.Count} notifications. Removing notifications... please wait. It might take some time.", cancellationToken: cancellationToken);
-            _timers.RemoveTimers();
-            //try
-            //{
-            //    CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=tomasbotstorage;AccountKey=I4+e7qZyKNIiFsLR1R8XLn5AQVSq6DP3gRd3eHq2H/x3n44zUtLEqB5PIYee0PBGbQpo358xA/CUHtr/RAAPaw==;EndpointSuffix=core.windows.net");
-            //    CloudQueueClient queueClient = cloudStorageAccount.CreateCloudQueueClient();
-            //    CloudQueue queue = queueClient.GetQueueReference("botmessagebacklog");
-            //    await queue.CreateIfNotExistsAsync();
-            //    CloudQueueMessage message = new CloudQueueMessage(JsonConvert.SerializeObject(queueMessage));
-            //    await queue.AddMessageAsync(message);
-            //}
-            //catch (Exception e)
-            //{
-            //    await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
-            //    throw;
-            //}
-
-            //if(queue.PeekMessageAsync(,message,cancellationToken) != null)
+            await stepContext.Context.SendActivityAsync($"Removing notifications... please wait. It might take some time.", cancellationToken: cancellationToken);
+            var variables = await GlobalVariablesService.GetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id);
+            variables.PushNotifications = "false";
+            await GlobalVariablesService.SetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id, variables);
 
             await stepContext.Context.SendActivityAsync("Notifications Removed", cancellationToken: cancellationToken);
             return await stepContext.EndDialogAsync(null, cancellationToken);

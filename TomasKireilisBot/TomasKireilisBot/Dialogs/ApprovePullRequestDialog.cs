@@ -109,6 +109,7 @@ namespace TomasKireilisBot.Dialogs
             {
                 await stepContext.Context.SendActivityAsync(e.Message,
                            cancellationToken: cancellationToken);
+                return await stepContext.EndDialogAsync(null, cancellationToken);
             }
         }
     }

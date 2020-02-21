@@ -61,6 +61,8 @@ namespace TomasKireilisBot
 
             services.AddSingleton<ActivatePullRequestNotificationDialog>();
 
+            services.AddSingleton<ApprovePullRequestDialog>();
+
             services.AddSingleton<DeActivatePullRequestNotificationDialog>();
 
             // The MainDialog that will be run by the bot.

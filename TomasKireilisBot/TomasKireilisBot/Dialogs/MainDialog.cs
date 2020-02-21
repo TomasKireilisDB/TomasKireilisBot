@@ -54,22 +54,16 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            try
+            var cardActionValue = await GetCardActionValueAsync(stepContext.Context);
+            if (cardActionValue != null)
             {
-                var cardActionValue = await GetCardActionValueAsync(stepContext.Context);
-                if (cardActionValue != null)
+                var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand(cardActionValue));
+                if (foundCommand != null)
                 {
-                    var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand(cardActionValue));
-                    if (foundCommand != null)
-                    {
-                        return await stepContext.NextAsync(cardActionValue, cancellationToken);
-                    }
+                    return await stepContext.NextAsync(cardActionValue, cancellationToken);
                 }
             }
-            catch (Exception e)
-            {
-                await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
-            }
+
             var reply = (Activity)MessageFactory.Attachment(CreateAdaptiveCardAttachment());
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
             return await stepContext.NextAsync(null, cancellationToken);
@@ -77,18 +71,12 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            try
+            var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand((string)stepContext.Result));
+            if (foundCommand != null)
             {
-                var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand((string)stepContext.Result));
-                if (foundCommand != null)
-                {
-                    return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, (string)stepContext.Result, cancellationToken);
-                }
+                return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, (string)stepContext.Result, cancellationToken);
             }
-            catch (Exception e)
-            {
-                await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
-            }
+
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
 

@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Services;
@@ -13,8 +11,14 @@ namespace TomasKireilisBot.Helpers
 
         public static async Task<BitBucketConversationVariables> GetBitBucketConversationVariables(string userId)
         {
-            return await _azureDb.GetUserConfigurationsAsync(userId);
-            // return JsonConvert.DeserializeObject<BitBucketConversationVariables>(await GetJsonGlobalVariables());
+            try
+            {
+                return await _azureDb.GetUserConfigurationsAsync(userId);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public static async Task<string> GetDefaultJsonGlobalVariables()
@@ -27,25 +31,26 @@ namespace TomasKireilisBot.Helpers
 
         public static async Task<bool> SetBitBucketConversationVariables(string userId, BitBucketConversationVariables bitBucketConversationVariables)
         {
-            return await _azureDb.SetUserConfigurationsAsync(userId, bitBucketConversationVariables);
-            //using (StreamWriter r = new StreamWriter("GlobalVariables.json"))
-            //{
-            //    try
-            //    {
-            //        await r.WriteAsync(JsonConvert.SerializeObject(bitBucketConversationVariables));
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        return false;
-            //    }
-
-            //    return true;
-            //}
+            try
+            {
+                return await _azureDb.SetUserConfigurationsAsync(userId, bitBucketConversationVariables);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static async Task<bool> SetDefaultBitBucketConversationVariables(string userId)
         {
-            return await _azureDb.UpdateUserDefaultDbConfigurations(userId);
+            try
+            {
+                return await _azureDb.UpdateUserDefaultDbConfigurations(userId);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

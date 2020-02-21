@@ -27,8 +27,11 @@ namespace TomasKireilisBot.Dialogs
             await stepContext.Context.SendActivityAsync($"Removing notifications... please wait. It might take some time.", cancellationToken: cancellationToken);
             var variables = await GlobalVariablesService.GetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id);
             variables.PushNotifications = "false";
-            await GlobalVariablesService.SetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id, variables);
-
+            if (!await GlobalVariablesService.SetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id, variables))
+            {
+                await stepContext.Context.SendActivityAsync($"Unexpected error happened while trying to remove notification.", cancellationToken: cancellationToken);
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
             await stepContext.Context.SendActivityAsync("Notifications Removed", cancellationToken: cancellationToken);
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }

@@ -39,7 +39,15 @@ namespace TomasKireilisBot.Dialogs
                     stepContext.Context.Activity.Recipient.Id)), cancellationToken: cancellationToken);
 
             var reply = MessageFactory.Text("Please provide configuration file");
-            return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = reply }, cancellationToken);
+            try
+            {
+                return await stepContext.PromptAsync(nameof(TextPrompt), new PromptOptions { Prompt = reply }, cancellationToken);
+            }
+            catch
+            {
+                await stepContext.Context.SendActivityAsync("Warning. Did not receive configuration file. Configuration file remain unchanged", cancellationToken: cancellationToken);
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
         }
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)

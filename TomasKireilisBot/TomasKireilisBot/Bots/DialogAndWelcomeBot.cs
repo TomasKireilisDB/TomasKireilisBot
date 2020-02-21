@@ -20,8 +20,8 @@ namespace TomasKireilisBot.Bots
     public class DialogAndWelcomeBot<T> : DialogBot<T>
         where T : Dialog
     {
-        public DialogAndWelcomeBot(List<ExpectedCommand> expectedCommandsList, IInnerBitbucketClient innerBitbucketClient, ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
-            : base(innerBitbucketClient, conversationState, userState, dialog, logger, expectedCommandsList)
+        public DialogAndWelcomeBot(List<ExpectedCommand> expectedCommandsList, ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
+            : base(conversationState, userState, dialog, logger, expectedCommandsList)
         {
         }
 

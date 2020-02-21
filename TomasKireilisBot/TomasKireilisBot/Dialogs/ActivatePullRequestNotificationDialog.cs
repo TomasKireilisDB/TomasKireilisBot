@@ -29,9 +29,16 @@ namespace TomasKireilisBot.Dialogs
             await stepContext.Context.SendActivityAsync($"Adding notification... please wait. It might take some time.", cancellationToken: cancellationToken);
             var variables = await GlobalVariablesService.GetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id);
             variables.PushNotifications = "true";
-            await GlobalVariablesService.SetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id, variables);
-            await stepContext.Context.SendActivityAsync("Notification added", cancellationToken: cancellationToken);
-            return await stepContext.EndDialogAsync(null, cancellationToken);
+            if (!await GlobalVariablesService.SetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id, variables))
+            {
+                await stepContext.Context.SendActivityAsync($"Unexpected error happened while trying to add notification.", cancellationToken: cancellationToken);
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
+            else
+            {
+                await stepContext.Context.SendActivityAsync("Notification added", cancellationToken: cancellationToken);
+                return await stepContext.EndDialogAsync(null, cancellationToken);
+            }
         }
     }
 }

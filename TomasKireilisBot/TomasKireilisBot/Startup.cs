@@ -52,6 +52,7 @@ namespace TomasKireilisBot
             new ExpectedCommand(nameof(ChangePullRequestsConfigurationDialog),"Change pull requests configuration","PRC"),
             new ExpectedCommand(nameof(ActivatePullRequestNotificationDialog),"Activate pull request notification","APR"),
             new ExpectedCommand(nameof(DeActivatePullRequestNotificationDialog),"Deactivate pull request notifications","DPR"),
+            new ExpectedCommand(nameof(ApprovePullRequestDialog),"approvepullrequest>","approvepullrequest>"),
     });
 
             services.AddSingleton<CheckActivePullRequestsDialog>();

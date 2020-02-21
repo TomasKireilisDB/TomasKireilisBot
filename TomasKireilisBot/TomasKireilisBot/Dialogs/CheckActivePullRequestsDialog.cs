@@ -65,7 +65,7 @@ namespace TomasKireilisBot.Dialogs
                         catch (Exception e)
                         {
                             await stepContext.Context.SendActivityAsync(
-                                "Exception was thrown during fetching data, maybe there in a wrong info provided for fetching information?",
+                                "Error was thrown during fetching data, maybe there in a wrong info provided for fetching information?",
                                 cancellationToken: cancellationToken);
                             await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
                         }
@@ -125,12 +125,12 @@ namespace TomasKireilisBot.Dialogs
             {
                 Text = $"Create date: {pullRequest.CreatedDate} \n"
             });
-            PullRequestApprovalExecutionData pr = new PullRequestApprovalExecutionData();
-            pr.ApprovePullRequest = $"ApprovePullRequest>{baseUrl}>{projectName}>{repositoryName}>{pullRequest.Id}";
+            // PullRequestApprovalExecutionData pr = new PullRequestApprovalExecutionData();
+            // pr.ApprovePullRequest = $"ApprovePullRequest>{baseUrl}>{projectName}>{repositoryName}>{pullRequest.Id}";
             card.Actions.Add(new SubmitAction()
             {
                 Title = "Approve pull request",
-                DataJson = JsonConvert.SerializeObject(pr),
+                DataJson = JsonConvert.SerializeObject(new CardAction() { Type = ActionTypes.ImBack, Value = $"ApprovePullRequest>{baseUrl}>{projectName}>{repositoryName}>{pullRequest.Id}" }),
             });
 
             // Create the attachment.

@@ -1,3 +1,5 @@
+using System;
+
 namespace TomasKireilisBot.Dialogs
 {
     public class ExpectedCommand
@@ -22,7 +24,7 @@ namespace TomasKireilisBot.Dialogs
                 return false;
             }
 
-            if (textInput.ToLower() == LongName.ToLower() || textInput.ToLower() == ShortName.ToLower())
+            if (textInput.ToLower().StartsWith(LongName.ToLower()) || textInput.ToLower().StartsWith(ShortName.ToLower()))
             {
                 return true;
             }

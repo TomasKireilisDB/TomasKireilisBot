@@ -29,16 +29,14 @@ namespace TomasKireilisBot.Bots
         where T : Dialog
     {
         protected readonly Dialog Dialog;
-        private readonly IInnerBitbucketClient _innerBitbucketClient;
         protected readonly BotState ConversationState;
         protected readonly BotState UserState;
         protected readonly ILogger Logger;
         private List<ExpectedCommand> _expectedCommandsList;
 
-        public DialogBot(IInnerBitbucketClient innerBitbucketClient, ConversationState conversationState, UserState userState, T dialog,
+        public DialogBot(ConversationState conversationState, UserState userState, T dialog,
             ILogger<DialogBot<T>> logger, List<ExpectedCommand> expectedCommandsList)
         {
-            _innerBitbucketClient = innerBitbucketClient;
             ConversationState = conversationState;
             UserState = userState;
             Dialog = dialog;
@@ -57,82 +55,81 @@ namespace TomasKireilisBot.Bots
 
         protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
         {
-            await CheckIfApprovePullRequestActivity(turnContext, cancellationToken);
-            // Run the Dialog with the new message Activity.
+            // await CheckIfApprovePullRequestActivity(turnContext, cancellationToken);
             await Dialog.RunAsync(turnContext, ConversationState.CreateProperty<DialogState>("DialogState"), cancellationToken);
         }
 
-        private async Task CheckIfApprovePullRequestActivity(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
-        {
-            var dataList = new List<string>();
-            var activityValue = "";
-            try
-            {
-                activityValue = JsonConvert.DeserializeObject<PullRequestApprovalExecutionData>(turnContext.Activity.Value?.ToString())
-                    .ApprovePullRequest;
-            }
-            catch
-            {
-                return;
-            }
+        //private async Task CheckIfApprovePullRequestActivity(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken)
+        //{
+        //    var dataList = new List<string>();
+        //    var activityValue = "";
+        //    try
+        //    {
+        //        activityValue = JsonConvert.DeserializeObject<PullRequestApprovalExecutionData>(turnContext.Activity.Value?.ToString())
+        //            .ApprovePullRequest;
+        //    }
+        //    catch
+        //    {
+        //        return;
+        //    }
 
-            if (activityValue == null)
-            {
-                return;
-            }
+        //    if (activityValue == null)
+        //    {
+        //        return;
+        //    }
 
-            dataList = activityValue.Split('>', StringSplitOptions.RemoveEmptyEntries).ToList();
+        //    dataList = activityValue.Split('>', StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            if (dataList.Count == 5 && dataList[0]?.ToLower() == "approvepullrequest")
-            {
-                await turnContext.SendActivityAsync("CheckingPullRequestStatus...", cancellationToken: cancellationToken);
-                bool resultFound = false;
+        //    if (dataList.Count == 5 && dataList[0]?.ToLower() == "approvepullrequest")
+        //    {
+        //        await turnContext.SendActivityAsync("CheckingPullRequestStatus...", cancellationToken: cancellationToken);
+        //        bool resultFound = false;
 
-                foreach (
-                    var globalVariable
-                    in (await GlobalVariablesService.GetBitBucketConversationVariables(turnContext.Activity.Recipient.Id)).GlobalVariables
-                    )
+        //        foreach (
+        //            var globalVariable
+        //            in (await GlobalVariablesService.GetBitBucketConversationVariables(turnContext.Activity.Recipient.Id)).GlobalVariables
+        //            )
 
-                {
-                    foreach (var project in globalVariable.Projects)
-                    {
-                        foreach (var repositoryName in project.RepositoryNames)
-                        {
-                            if (string.Equals(globalVariable.BaseUrl, dataList[1], StringComparison.CurrentCultureIgnoreCase) &&
-                                string.Equals(project.ProjectName, dataList[2], StringComparison.CurrentCultureIgnoreCase) &&
-                                string.Equals(repositoryName, dataList[3], StringComparison.CurrentCultureIgnoreCase))
-                            {
-                                resultFound = true;
-                                try
-                                {
-                                    await _innerBitbucketClient.ApprovePullRequest(globalVariable.BaseUrl,
-                                        project.ProjectName,
-                                        repositoryName,
-                                        globalVariable.PersonalAccessToken,
-                                        globalVariable.Password,
-                                        globalVariable.UserName, long.Parse(dataList[4]));
-                                    await turnContext.SendActivityAsync("Approved successfully", cancellationToken: cancellationToken);
-                                }
-                                catch (Exception e)
-                                {
-                                    await turnContext.SendActivityAsync("Oooops. Something went wrong. Could not approve pull request",
-                                        cancellationToken: cancellationToken);
-                                    await turnContext.SendActivityAsync(e.Message,
-                                        cancellationToken: cancellationToken);
-                                }
+        //        {
+        //            foreach (var project in globalVariable.Projects)
+        //            {
+        //                foreach (var repositoryName in project.RepositoryNames)
+        //                {
+        //                    if (string.Equals(globalVariable.BaseUrl, dataList[1], StringComparison.CurrentCultureIgnoreCase) &&
+        //                        string.Equals(project.ProjectName, dataList[2], StringComparison.CurrentCultureIgnoreCase) &&
+        //                        string.Equals(repositoryName, dataList[3], StringComparison.CurrentCultureIgnoreCase))
+        //                    {
+        //                        resultFound = true;
+        //                        try
+        //                        {
+        //                            await _innerBitbucketClient.ApprovePullRequest(globalVariable.BaseUrl,
+        //                                project.ProjectName,
+        //                                repositoryName,
+        //                                globalVariable.PersonalAccessToken,
+        //                                globalVariable.Password,
+        //                                globalVariable.UserName, long.Parse(dataList[4]));
+        //                            await turnContext.SendActivityAsync("Approved successfully", cancellationToken: cancellationToken);
+        //                        }
+        //                        catch (Exception e)
+        //                        {
+        //                            await turnContext.SendActivityAsync("Oooops. Something went wrong. Could not approve pull request",
+        //                                cancellationToken: cancellationToken);
+        //                            await turnContext.SendActivityAsync(e.Message,
+        //                                cancellationToken: cancellationToken);
+        //                        }
 
-                                break;
-                            }
-                        }
-                    }
-                }
+        //                        break;
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                if (!resultFound)
-                {
-                    await turnContext.SendActivityAsync("Could not find such repository. Check project and repository names",
-                        cancellationToken: cancellationToken);
-                }
-            }
-        }
+        //        if (!resultFound)
+        //        {
+        //            await turnContext.SendActivityAsync("Could not find such repository. Check project and repository names",
+        //                cancellationToken: cancellationToken);
+        //        }
+        //    }
+        //}
     }
 }

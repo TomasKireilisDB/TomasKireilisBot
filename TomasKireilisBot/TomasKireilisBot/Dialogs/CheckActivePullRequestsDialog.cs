@@ -40,6 +40,11 @@ namespace TomasKireilisBot.Dialogs
         private async Task<DialogTurnResult> FetchPullRequests(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             BitBucketConversationVariables = await GlobalVariablesService.GetBitBucketConversationVariables(stepContext.Context.Activity.Recipient.Id);
+            if (BitBucketConversationVariables?.GlobalVariables == null)
+            {
+                await stepContext.Context.SendActivityAsync("No configuration found", cancellationToken: cancellationToken);
+                return await stepContext.NextAsync(null, cancellationToken);
+            }
             await stepContext.Context.SendActivityAsync("Gathering info...", cancellationToken: cancellationToken);
             bool foundAnyPullRequest = false;
             foreach (var globalVariable in BitBucketConversationVariables.GlobalVariables)

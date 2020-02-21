@@ -9,6 +9,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,14 +52,21 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> IntroStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var cardActionValue = await GetCardActionValueAsync(stepContext.Context);
-            if (cardActionValue != null)
+            try
             {
-                var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand(cardActionValue));
-                if (foundCommand != null)
+                var cardActionValue = await GetCardActionValueAsync(stepContext.Context);
+                if (cardActionValue != null)
                 {
-                    return await stepContext.NextAsync(cardActionValue, cancellationToken);
+                    var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand(cardActionValue));
+                    if (foundCommand != null)
+                    {
+                        return await stepContext.NextAsync(cardActionValue, cancellationToken);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
             }
             var reply = (Activity)MessageFactory.Attachment(CreateAdaptiveCardAttachment());
             await stepContext.Context.SendActivityAsync(reply, cancellationToken);
@@ -67,10 +75,17 @@ namespace TomasKireilisBot.Dialogs
 
         private async Task<DialogTurnResult> FinalStepAsync(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
-            var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand((string)stepContext.Result));
-            if (foundCommand != null)
+            try
             {
-                return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, new BitBucketConversationVariables() { Data = (string)stepContext.Result }, cancellationToken);
+                var foundCommand = _expectedCommandsList.Find(x => x.CheckIfCalledThisCommand((string)stepContext.Result));
+                if (foundCommand != null)
+                {
+                    return await stepContext.BeginDialogAsync(foundCommand.OpenDialogId, new BitBucketConversationVariables() { Data = (string)stepContext.Result }, cancellationToken);
+                }
+            }
+            catch (Exception e)
+            {
+                await stepContext.Context.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
             }
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }

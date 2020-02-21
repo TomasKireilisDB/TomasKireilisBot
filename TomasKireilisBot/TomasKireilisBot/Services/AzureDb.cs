@@ -25,23 +25,38 @@ namespace TomasKireilisBot.Services
 
         public async Task<BitBucketConversationVariables> GetUserConfigurationsAsync(string userId)
         {
-            var response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId });
+            var response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId }) ?? new Dictionary<string, object>();
             if (response.TryGetValue(userId, out object value))
             {
-                var re = value.ToString();
+                var jObject = JObject.Parse(value.ToString());
+                return JsonConvert.DeserializeObject<BitBucketConversationVariables>(jObject.ToString());
             }
             return null;
         }
 
+        public async Task<bool> SetUserConfigurationsAsync(
+            string userId,
+            BitBucketConversationVariables bitBucketConversationVariables)
+        {
+            if (GetUserConfigurationsAsync(userId) != null)
+            {
+                await _myStorage.DeleteAsync(new[] { userId });
+            }
+            IDictionary<string, object> defaultConfig = new Dictionary<string, object>();
+            defaultConfig.Add(userId, JObject.Parse(JsonConvert.SerializeObject(bitBucketConversationVariables)));
+            await _myStorage.WriteAsync(defaultConfig);
+            return true;
+        }
+
         public async Task<bool> UpdateUserDefaultDbConfigurations(string userId)
         {
-            //var response = new Dictionary<string, object>();
-            //response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId }) ?? new Dictionary<string, object>();
-            //if (response.TryGetValue(userId, out object value))
-            //{
-            //    return false;
-            //}
-            //else
+            var response = new Dictionary<string, object>();
+            response = (Dictionary<string, object>)await _myStorage.ReadAsync(new[] { userId }) ?? new Dictionary<string, object>();
+            if (response.TryGetValue(userId, out object value))
+            {
+                return false;
+            }
+            else
             {
                 IDictionary<string, object> defaultConfig = new Dictionary<string, object>();
                 defaultConfig.Add(userId, JObject.Parse(await GlobalVariablesService.GetDefaultJsonGlobalVariables()));

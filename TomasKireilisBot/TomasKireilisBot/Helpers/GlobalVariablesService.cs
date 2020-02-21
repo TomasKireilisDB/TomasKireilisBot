@@ -25,21 +25,22 @@ namespace TomasKireilisBot.Helpers
             }
         }
 
-        public static async Task<bool> SetBitBucketConversationVariables(BitBucketConversationVariables bitBucketConversationVariables)
+        public static async Task<bool> SetBitBucketConversationVariables(string userId, BitBucketConversationVariables bitBucketConversationVariables)
         {
-            using (StreamWriter r = new StreamWriter("GlobalVariables.json"))
-            {
-                try
-                {
-                    await r.WriteAsync(JsonConvert.SerializeObject(bitBucketConversationVariables));
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
+            return await _azureDb.SetUserConfigurationsAsync(userId, bitBucketConversationVariables);
+            //using (StreamWriter r = new StreamWriter("GlobalVariables.json"))
+            //{
+            //    try
+            //    {
+            //        await r.WriteAsync(JsonConvert.SerializeObject(bitBucketConversationVariables));
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        return false;
+            //    }
 
-                return true;
-            }
+            //    return true;
+            //}
         }
 
         public static async Task<bool> SetDefaultBitBucketConversationVariables(string userId)

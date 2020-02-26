@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TomasKireilisBot.DataModels
+namespace TomasKireilisBot.DataModels.Variables
 {
     public class BitBucketConversationVariables
     {

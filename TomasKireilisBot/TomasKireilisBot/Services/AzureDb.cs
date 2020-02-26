@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TomasKireilisBot.DataModels;
+using TomasKireilisBot.DataModels.Variables;
 using TomasKireilisBot.Helpers;
 
 namespace TomasKireilisBot.Services

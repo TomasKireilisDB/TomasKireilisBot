@@ -1,19 +1,20 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using TomasKireilisBot.DataModels;
+using TomasKireilisBot.DataModels.Variables;
 using TomasKireilisBot.Services;
 
 namespace TomasKireilisBot.Helpers
 {
     public static class GlobalVariablesService
     {
-        private static readonly AzureDb _azureDb = new AzureDb();
+        private static readonly AzureDb AzureDb = new AzureDb();
 
         public static async Task<BitBucketConversationVariables> GetBitBucketConversationVariables(string userId)
         {
             try
             {
-                return await _azureDb.GetUserConfigurationsAsync(userId);
+                return await AzureDb.GetUserConfigurationsAsync(userId);
             }
             catch
             {
@@ -33,7 +34,7 @@ namespace TomasKireilisBot.Helpers
         {
             try
             {
-                return await _azureDb.SetUserConfigurationsAsync(userId, bitBucketConversationVariables);
+                return await AzureDb.SetUserConfigurationsAsync(userId, bitBucketConversationVariables);
             }
             catch
             {
@@ -45,7 +46,7 @@ namespace TomasKireilisBot.Helpers
         {
             try
             {
-                return await _azureDb.UpdateUserDefaultDbConfigurations(userId);
+                return await AzureDb.UpdateUserDefaultDbConfigurations(userId);
             }
             catch
             {

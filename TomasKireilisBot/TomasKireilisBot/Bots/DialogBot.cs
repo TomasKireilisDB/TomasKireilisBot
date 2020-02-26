@@ -32,16 +32,14 @@ namespace TomasKireilisBot.Bots
         protected readonly BotState ConversationState;
         protected readonly BotState UserState;
         protected readonly ILogger Logger;
-        private List<ExpectedCommand> _expectedCommandsList;
 
         public DialogBot(ConversationState conversationState, UserState userState, T dialog,
-            ILogger<DialogBot<T>> logger, List<ExpectedCommand> expectedCommandsList)
+            ILogger<DialogBot<T>> logger)
         {
             ConversationState = conversationState;
             UserState = userState;
             Dialog = dialog;
             Logger = logger;
-            _expectedCommandsList = expectedCommandsList;
         }
 
         public override async Task OnTurnAsync(ITurnContext turnContext, CancellationToken cancellationToken = default(CancellationToken))

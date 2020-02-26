@@ -2,17 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using TomasKireilisBot.Helpers;
-using TomasKireilisBot.Services.Timer;
 
 namespace TomasKireilisBot.Dialogs
 {
     public class DeActivatePullRequestNotificationDialog : CancelAndHelpDialog
     {
-        private readonly Timers _timers;
-
-        public DeActivatePullRequestNotificationDialog(Timers timers) : base(nameof(DeActivatePullRequestNotificationDialog))
+        public DeActivatePullRequestNotificationDialog() : base(nameof(DeActivatePullRequestNotificationDialog))
         {
-            _timers = timers;
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 FinalStepAsync

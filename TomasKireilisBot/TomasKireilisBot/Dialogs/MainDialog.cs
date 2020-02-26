@@ -20,7 +20,7 @@ namespace TomasKireilisBot.Dialogs
     public class MainDialog : ComponentDialog
     {
         protected readonly ILogger Logger;
-        private List<ExpectedCommand> _expectedCommandsList;
+        private readonly List<ExpectedCommand> _expectedCommandsList;
 
         // Dependency injection uses this constructor to instantiate MainDialog
         public MainDialog(CheckActivePullRequestsDialog checkActivePullRequestsDialog,

@@ -15,10 +15,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using TomasKireilisBot.Bots;
 using TomasKireilisBot.DataModels;
+using TomasKireilisBot.DataModels.Variables;
 using TomasKireilisBot.Dialogs;
 using TomasKireilisBot.Services;
 using TomasKireilisBot.Services.BitbucketService;
-using TomasKireilisBot.Services.Timer;
 
 namespace TomasKireilisBot
 {
@@ -36,7 +36,6 @@ namespace TomasKireilisBot
             services.AddSingleton<IStorage, MemoryStorage>();
             services.AddSingleton<IInnerBitbucketClient, InnerBitbucketClient>();
             services.AddSingleton<IAdapterIntegration, BotFrameworkHttpAdapter>();
-            services.AddSingleton<Timers>();
             services.AddSingleton<BitBucketConversationVariables>();
 
             // Create the User state. (Used in this bot's Dialog implementation.)

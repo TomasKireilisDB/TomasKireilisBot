@@ -20,8 +20,8 @@ namespace TomasKireilisBot.Bots
     public class DialogAndWelcomeBot<T> : DialogBot<T>
         where T : Dialog
     {
-        public DialogAndWelcomeBot(List<ExpectedCommand> expectedCommandsList, ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
-            : base(conversationState, userState, dialog, logger, expectedCommandsList)
+        public DialogAndWelcomeBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger)
+            : base(conversationState, userState, dialog, logger)
         {
         }
 
@@ -38,8 +38,8 @@ namespace TomasKireilisBot.Bots
                     }
                     catch (Exception e)
                     {
-                        await turnContext.SendActivityAsync("Could not establish connection between bot and database. Some features may not work correctly");
-                        await turnContext.SendActivityAsync(e.Message);
+                        await turnContext.SendActivityAsync("Could not establish connection between bot and database. Some features may not work correctly", cancellationToken: cancellationToken);
+                        await turnContext.SendActivityAsync(e.Message, cancellationToken: cancellationToken);
                     }
 
                     var reply = MessageFactory.Text("Hello");

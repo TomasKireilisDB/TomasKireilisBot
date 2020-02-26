@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using TomasKireilisBot.DataModels;
+using TomasKireilisBot.DataModels.Variables;
 using TomasKireilisBot.Helpers;
 
 namespace TomasKireilisBot.Dialogs
@@ -27,11 +28,6 @@ namespace TomasKireilisBot.Dialogs
         private async Task<DialogTurnResult> AskForConfigurationFile(WaterfallStepContext stepContext, CancellationToken cancellationToken)
         {
             await stepContext.Context.SendActivityAsync("This is current configuration:", cancellationToken: cancellationToken);
-            //var fileActivity = new Activity();
-            //fileActivity.Attachments = new List<Attachment>();
-            //var configFile = new Attachment();
-            //configFile.Content = GlobalVariablesService.GetJsonGlobalVariables();
-            //fileActivity.Attachments.Add(configFile);
 
             await stepContext.Context.SendActivityAsync(
                 JsonConvert.SerializeObject(

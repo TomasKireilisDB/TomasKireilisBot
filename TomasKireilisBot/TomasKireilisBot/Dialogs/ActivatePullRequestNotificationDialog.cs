@@ -1,20 +1,14 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
-using Microsoft.Bot.Schema;
 using System.Threading;
 using System.Threading.Tasks;
 using TomasKireilisBot.Helpers;
-using TomasKireilisBot.Services.Timer;
-using QueueMessage = TomasKireilisBot.DataModels.QueueMessage;
 
 namespace TomasKireilisBot.Dialogs
 {
     public class ActivatePullRequestNotificationDialog : CancelAndHelpDialog
     {
-        private readonly Timers _timers;
-
-        public ActivatePullRequestNotificationDialog(Timers timers) : base(nameof(ActivatePullRequestNotificationDialog))
+        public ActivatePullRequestNotificationDialog() : base(nameof(ActivatePullRequestNotificationDialog))
         {
-            _timers = timers;
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 FinalStepAsync

@@ -14,7 +14,6 @@ namespace TomasKireilisBot.Dialogs
         public string LongName { get; set; }
         public string ShortName { get; set; }
         public string OpenDialogId { get; set; }
-        public object PassingObject { get; set; }
 
         public bool CheckIfCalledThisCommand(string textInput)
         {

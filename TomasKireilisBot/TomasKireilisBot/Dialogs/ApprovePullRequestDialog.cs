@@ -1,26 +1,22 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using TomasKireilisBot.DataModels;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
-using TomasKireilisBot.Services.Timer;
 
 namespace TomasKireilisBot.Dialogs
 {
     public class ApprovePullRequestDialog : CancelAndHelpDialog
     {
-        private readonly Timers _timers;
         private readonly IInnerBitbucketClient _innerBitbucketClient;
 
-        public ApprovePullRequestDialog(IInnerBitbucketClient innerBitbucketClient, Timers timers) : base(nameof(ApprovePullRequestDialog))
+        public ApprovePullRequestDialog(IInnerBitbucketClient innerBitbucketClient) : base(nameof(ApprovePullRequestDialog))
         {
             _innerBitbucketClient = innerBitbucketClient;
-            _timers = timers;
+
             AddDialog(new WaterfallDialog(nameof(WaterfallDialog), new WaterfallStep[]
             {
                 FinalStepAsync
@@ -104,5 +100,4 @@ namespace TomasKireilisBot.Dialogs
             return await stepContext.EndDialogAsync(null, cancellationToken);
         }
     }
-}
 }

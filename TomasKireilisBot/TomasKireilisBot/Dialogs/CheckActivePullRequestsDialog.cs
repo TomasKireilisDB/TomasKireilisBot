@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TomasKireilisBot.DataModels;
+using TomasKireilisBot.DataModels.Variables;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;
 
@@ -77,9 +78,9 @@ namespace TomasKireilisBot.Dialogs
 
                         foreach (var pullRequest in pullRequestList)
                         {
-                            var welcomeCard = CreateAdaptiveCardAttachment(pullRequest, globalVariable.BaseUrl, project.ProjectName,
+                            var pullRequestCard = CreateAdaptiveCardAttachment(pullRequest, globalVariable.BaseUrl, project.ProjectName,
                                 repositoryName);
-                            var response = MessageFactory.Attachment(welcomeCard);
+                            var response = MessageFactory.Attachment(pullRequestCard);
                             await stepContext.Context.SendActivityAsync(response, cancellationToken);
                         }
                     }
@@ -104,34 +105,26 @@ namespace TomasKireilisBot.Dialogs
         {
             AdaptiveCard card = new AdaptiveCard();
 
-            // Specify speech for the card.
-            card.Speak = "Active Pull Request";
-
-            // Add text to the card.
             card.Body.Add(new TextBlock()
             {
                 Text = $"Author: {pullRequest.Author?.User.Name}  \n  "
             });
 
-            // Add text to the card.
             card.Body.Add(new TextBlock()
             {
                 Text = $"Id: {pullRequest.Id} \n  "
             });
 
-            // Add text to the card.
             card.Body.Add(new TextBlock()
             {
                 Text = $"Description: {pullRequest.Description} \n"
             });
 
-            // Add text to the card.
             card.Body.Add(new TextBlock()
             {
                 Text = $"Create date: {pullRequest.CreatedDate} \n"
             });
-            // PullRequestApprovalExecutionData pr = new PullRequestApprovalExecutionData();
-            // pr.ApprovePullRequest = $"ApprovePullRequest>{baseUrl}>{projectName}>{repositoryName}>{pullRequest.Id}";
+
             card.Actions.Add(new SubmitAction()
             {
                 Title = "Approve pull request",

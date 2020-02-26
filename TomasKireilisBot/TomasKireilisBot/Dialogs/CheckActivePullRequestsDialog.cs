@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using TomasKireilisBot.DataModels;
 using TomasKireilisBot.DataModels.Variables;
 using TomasKireilisBot.Helpers;
 using TomasKireilisBot.Services.BitbucketService;

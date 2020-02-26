@@ -14,7 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using TomasKireilisBot.Bots;
-using TomasKireilisBot.DataModels;
 using TomasKireilisBot.DataModels.Variables;
 using TomasKireilisBot.Dialogs;
 using TomasKireilisBot.Services;
@@ -52,7 +51,7 @@ namespace TomasKireilisBot
             new ExpectedCommand(nameof(ChangePullRequestsConfigurationDialog),"Change pull requests configuration","PRC"),
             new ExpectedCommand(nameof(ActivatePullRequestNotificationDialog),"Activate pull request notification","APR"),
             new ExpectedCommand(nameof(DeActivatePullRequestNotificationDialog),"Deactivate pull request notifications","DPR"),
-            new ExpectedCommand(nameof(ApprovePullRequestDialog),"approvepullrequest>","approvepullrequest>"),
+            new ExpectedCommand(nameof(ApprovePullRequestDialog),"approvepullrequest>","approvepullrequest>")
     });
 
             // Create Dialogs

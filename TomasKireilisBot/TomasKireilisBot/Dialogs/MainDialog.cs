@@ -9,11 +9,9 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Schema;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using TomasKireilisBot.DataModels;
 
 namespace TomasKireilisBot.Dialogs
 {

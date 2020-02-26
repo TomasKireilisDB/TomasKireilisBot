@@ -25,7 +25,7 @@ namespace TomasKireilisBot.Bots
         protected readonly BotState ConversationState;
         protected readonly BotState UserState;
         protected readonly ILogger Logger;
-        private Dictionary<string, ConversationReference> _conversationReferences;
+        private readonly Dictionary<string, ConversationReference> _conversationReferences;
 
         public ProactiveBot(ConversationState conversationState, UserState userState, T dialog, ILogger<DialogBot<T>> logger, Dictionary<string, ConversationReference> conversationReferences)
         {

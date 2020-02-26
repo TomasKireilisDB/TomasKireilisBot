@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using TomasKireilisBot.DataModels;
 using TomasKireilisBot.DataModels.Variables;
 using TomasKireilisBot.Services;
 

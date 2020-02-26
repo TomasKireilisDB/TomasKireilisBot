@@ -28,11 +28,9 @@ namespace TomasKireilisBot.Dialogs
                 await stepContext.Context.SendActivityAsync($"Unexpected error happened while trying to add notification.", cancellationToken: cancellationToken);
                 return await stepContext.EndDialogAsync(null, cancellationToken);
             }
-            else
-            {
-                await stepContext.Context.SendActivityAsync("Notification added", cancellationToken: cancellationToken);
-                return await stepContext.EndDialogAsync(null, cancellationToken);
-            }
+
+            await stepContext.Context.SendActivityAsync("Notification added", cancellationToken: cancellationToken);
+            return await stepContext.EndDialogAsync(null, cancellationToken);
         }
     }
 }

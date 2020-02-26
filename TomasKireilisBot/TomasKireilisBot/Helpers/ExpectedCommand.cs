@@ -1,5 +1,3 @@
-using System;
-
 namespace TomasKireilisBot.Dialogs
 {
     public class ExpectedCommand
